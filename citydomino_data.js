@@ -21,7 +21,7 @@
       five_kind: {
         id: 'five_kind',
         name: 'Five of a Kind',
-        pts: 30,
+        pts: 40,
         desc: '5 domino di baris memiliki angka sama persis (warna bebas). Contoh: 5-5-5-5-5.',
         pattern: [
           { val: '5', col: 'blue' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '5', col: 'red' }, { val: '5', col: 'blue' }
@@ -30,7 +30,7 @@
       straight_flush: {
         id: 'straight_flush',
         name: 'Straight Flush',
-        pts: 40,
+        pts: 50,
         desc: '5 angka berurutan TANPA putus DAN kelimanya memiliki 1 warna sama persis.',
         pattern: [
           { val: '1', col: 'blue' }, { val: '2', col: 'blue' }, { val: '3', col: 'blue' }, { val: '4', col: 'blue' }, { val: '5', col: 'blue' }
@@ -39,7 +39,7 @@
       four_kind: {
         id: 'four_kind',
         name: 'Four of a Kind',
-        pts: 25,
+        pts: 35,
         desc: '4 domino memiliki angka yang sama di satu baris (warna bebas, 1 sisa bebas).',
         pattern: [
           { val: '4', col: 'amber' }, { val: '4', col: 'green' }, { val: '4', col: 'red' }, { val: '4', col: 'blue' }, { val: '•', col: 'blue' }
@@ -48,7 +48,7 @@
       full_house: {
         id: 'full_house',
         name: 'Full House',
-        pts: 20,
+        pts: 30,
         desc: 'Kombinasi 3 angka kembar + 2 angka kembar lain pada satu baris (warna bebas).',
         pattern: [
           { val: '3', col: 'green' }, { val: '3', col: 'blue' }, { val: '3', col: 'red' }, { val: '6', col: 'amber' }, { val: '6', col: 'green' }
@@ -57,7 +57,7 @@
       flush: {
         id: 'flush',
         name: 'Flush',
-        pts: 10,
+        pts: 20,
         desc: 'Semua 5 petak di satu baris memiliki warna latar yang sama persis (angka bebas).',
         pattern: [
           { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }
@@ -66,7 +66,7 @@
       straight: {
         id: 'straight',
         name: 'Straight',
-        pts: 15,
+        pts: 25,
         desc: '5 angka berurutan tanpa putus (misal: 2-3-4-5-6). Warna kartu boleh campur.',
         pattern: [
           { val: '2', col: 'blue' }, { val: '3', col: 'amber' }, { val: '4', col: 'green' }, { val: '5', col: 'red' }, { val: '6', col: 'blue' }
@@ -75,7 +75,7 @@
       color_boat: {
         id: 'color_boat',
         name: 'Color Boat',
-        pts: 7,
+        pts: 10,
         desc: '3 petak berwarna sama + 2 petak warna sama lainnya (misal: 3 biru & 2 merah).',
         pattern: [
           { val: '•', col: 'blue' }, { val: '•', col: 'blue' }, { val: '•', col: 'blue' }, { val: '•', col: 'red' }, { val: '•', col: 'red' }
@@ -84,7 +84,7 @@
       three_kind: {
         id: 'three_kind',
         name: 'Three of a Kind',
-        pts: 6,
+        pts: 7,
         desc: 'Ada 3 angka kembar sama di satu baris (warna bebas, 2 kartu lainnya bebas).',
         pattern: [
           { val: '2', col: 'red' }, { val: '2', col: 'blue' }, { val: '2', col: 'green' }, { val: '•', col: 'amber' }, { val: '•', col: 'blue' }
@@ -93,7 +93,7 @@
       two_pair: {
         id: 'two_pair',
         name: 'Two Pair',
-        pts: 4,
+        pts: 15,
         desc: 'Ada 2 pasang angka kembar yang berbeda (misal sepasang 1 dan sepasang 5).',
         pattern: [
           { val: '1', col: 'blue' }, { val: '1', col: 'red' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '•', col: 'blue' }
@@ -102,7 +102,7 @@
       one_pair: {
         id: 'one_pair',
         name: 'One Pair',
-        pts: 2,
+        pts: 5,
         desc: 'Minimal terdapat 1 pasang angka kembar sama di baris (warna bebas).',
         pattern: [
           { val: '6', col: 'amber' }, { val: '6', col: 'blue' }, { val: '•', col: 'green' }, { val: '•', col: 'red' }, { val: '•', col: 'blue' }

@@ -187,36 +187,92 @@
     </div>
   </div>
 
-  <!-- Modal Bantuan Aturan -->
+  <!-- Modal Bantuan Aturan & Latihan Interaktif -->
   <div class="modal-overlay" id="help-modal">
-    <div class="modal-card">
-      <div class="modal-title">ATURAN CITY DOMINO</div>
-      <ul class="rules-list">
-        <li><b>Tujuan:</b> Susun poker angka/warna bernilai tertinggi di 3 distrik kota sambil menjaga tingkat kepuasan warga (Happiness) minimal 50%.</li>
-        <li><b>Skala Bangunan:</b> Tiap angka domino merepresentasikan zonasi tata kota: 0 = Taman Kota/Pohon, 1 = Rumah Tapak, 2 = Ruko Komersial, 3 = Fasilitas Publik, 4 = Apartemen Blok, 5 = Menara Pencakar Langit, 6 = Mega Landmark Kota.</li>
-        <li><b>Keseimbangan Distrik (Happiness):</b> Dihitung langsung per distrik (total 30 petak zonasi). Tiap distrik menuntut 4 kebutuhan (masing-masing bernilai +25%):
-          <br>• <b>Pilar RTH (0, 1, 6):</b> Min. 10 petak (+25%)
-          <br>• <b>Pilar Hunian/Layanan (0, 3, 4):</b> Min. 10 petak (+25%)
-          <br>• <b>Pilar Pusat Bisnis (2, 5, 6):</b> Min. 10 petak (+25%)
-          <br>• <b>Bangunan Favorit Distrik:</b> Min. 6 petak sesuai ketetapan Master Plan (+25%)
-          <br>• <i>Catatan: Skor akhir tiap distrik dihitung dari Skor Poker Murni × % Happiness (klik angka skor di header distrik untuk melihat rincian kalkulasinya).</i>
-        </li>
-        <li><b>Aspirasi Warga:</b> Klik badge Happiness di header tiap distrik untuk melihat apa saja angka yang masih dibutuhkan warga di distrik tersebut. Jika kebutuhan terpenuhi sempurna, warga merasa senang!</li>
-        <li><b>Syarat Kalah (Fail-State):</b> Jika saat permainan berakhir terdapat <b>minimal 1 distrik</b> dengan Happiness di bawah <b>50%</b>, permainan langsung dihitung <b>KALAH (Kerusuhan Kota)</b>.</li>
-        <li><b>Rute Giliran:</b> Tiap ronde terdiri dari 6 aksi berurutan: Barat → Timur → Pusat → Timur → Barat → Pusat.</li>
-        <li><b>Tukar Kartu:</b> Pilih 1 kartu di distrik yang sedang aktif dan 1 kartu di tangan, lalu klik <i>Tukar Kartu</i>.</li>
-        <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
-        <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
-        <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 pt</b> pada baris yang membentuk kombinasi sah.</li>
-        <li><b>Deck Ronde:</b> Di akhir tiap ronde (tiap 6 aksi), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Permainan selesai setelah 5 ronde.</li>
-      </ul>
-      <button class="btn-undo" style="width:100%;" onclick="closeHelpModal()">Kembali ke Permainan</button>
+    <div class="modal-card modal-help-card">
+      <div class="modal-help-header">
+        <div class="help-nav-tabs">
+          <button class="help-tab-btn active" id="tab-btn-tut" onclick="switchHelpTab('tutorial')">🎮 Latihan Cepat</button>
+          <button class="help-tab-btn" id="tab-btn-rules" onclick="switchHelpTab('rules')">📖 Aturan Lengkap</button>
+        </div>
+        <button class="btn-help-mini" onclick="closeHelpModal()">✕ Tutup</button>
+      </div>
+
+      <!-- Tab 1: Latihan Interaktif -->
+      <div class="help-tab-pane active" id="pane-tutorial">
+        <div class="tut-stepper">
+          <div class="tut-step-dot active" id="tut-dot-1" onclick="loadTutStep(1)">1. Poker & Swap</div>
+          <div class="tut-step-dot" id="tut-dot-2" onclick="loadTutStep(2)">2. Putar & Warga</div>
+          <div class="tut-step-dot" id="tut-dot-3" onclick="loadTutStep(3)">3. Wild ⭐</div>
+        </div>
+
+        <div class="tut-instruction-card">
+          <div class="tut-instruction-title" id="tut-title">Tantangan 1: Cetak Poin Poker</div>
+          <div class="tut-instruction-desc" id="tut-desc">Pilih kartu tangan, lalu pilih kartu di distrik untuk membuat kombinasi Five of a Kind!</div>
+        </div>
+
+        <!-- Sandbox Baris Distrik -->
+        <div class="tut-sandbox-box">
+          <div class="tut-sublabel-row">
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span>Simulasi Distrik:</span>
+              <span class="district-happy-badge happy-danger" id="tut-happy-badge">⚠️ 25% (Butuh 1)</span>
+            </div>
+            <span id="tut-district-status" style="color:var(--highlight); font-weight:800;">Target: Five of a Kind (+30 pt)</span>
+          </div>
+          <div class="tut-district-row" id="tut-district-row"></div>
+        </div>
+
+        <!-- Sandbox Kartu Tangan & Aksi -->
+        <div class="tut-sandbox-box" id="tut-hand-box">
+          <div class="tut-sublabel-row">
+            <span>Kartu di Tangan:</span>
+            <span style="font-size:0.6rem; color:var(--text-muted);">Double klik atau 🔄 untuk putar</span>
+          </div>
+          <div class="tut-hand-row" id="tut-hand-row"></div>
+          <div class="actions-bar tut-action-bar">
+            <button class="btn-undo" onclick="resetTutStep()">↺ Ulangi</button>
+            <button class="btn-main" id="btn-tut-action" disabled onclick="executeTutAction()">Tukar Kartu</button>
+          </div>
+        </div>
+
+        <!-- Umpan Balik Selesai -->
+        <div class="tut-feedback-card" id="tut-feedback" style="display:none;">
+          <div class="tut-feedback-msg" id="tut-feedback-text">Bagus sekali!</div>
+          <button class="btn-tut-advance" id="btn-tut-next" onclick="nextTutStep()">Lanjut ➔</button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Teks Aturan Lengkap -->
+      <div class="help-tab-pane" id="pane-rules">
+        <ul class="rules-list">
+          <li><b>Tujuan:</b> Susun poker angka/warna bernilai tertinggi di 3 distrik kota sambil menjaga tingkat kepuasan warga (Happiness) minimal 50%.</li>
+          <li><b>Skala Bangunan:</b> Tiap angka domino merepresentasikan zonasi tata kota: 0 = Taman Kota/Pohon, 1 = Rumah Tapak, 2 = Ruko Komersial, 3 = Fasilitas Publik, 4 = Apartemen Blok, 5 = Menara Pencakar Langit, 6 = Mega Landmark Kota.</li>
+          <li><b>Keseimbangan Distrik (Happiness):</b> Dihitung langsung per distrik (total 30 petak zonasi). Tiap distrik menuntut 4 kebutuhan (masing-masing bernilai +25%):
+            <br>• <b>Pilar RTH (0, 1, 6):</b> Min. 10 petak (+25%)
+            <br>• <b>Pilar Hunian/Layanan (0, 3, 4):</b> Min. 10 petak (+25%)
+            <br>• <b>Pilar Pusat Bisnis (2, 5, 6):</b> Min. 10 petak (+25%)
+            <br>• <b>Bangunan Favorit Distrik:</b> Min. 6 petak sesuai ketetapan Master Plan (+25%)
+            <br>• <i>Catatan: Skor akhir tiap distrik dihitung dari Skor Poker Murni × % Happiness (klik angka skor di header distrik untuk melihat rincian kalkulasinya).</i>
+          </li>
+          <li><b>Aspirasi Warga:</b> Klik badge Happiness di header tiap distrik untuk melihat apa saja angka yang masih dibutuhkan warga di distrik tersebut. Jika kebutuhan terpenuhi sempurna, warga merasa senang!</li>
+          <li><b>Syarat Kalah (Fail-State):</b> Jika saat permainan berakhir terdapat <b>minimal 1 distrik</b> dengan Happiness di bawah <b>50%</b>, permainan langsung dihitung <b>KALAH (Kerusuhan Kota)</b>.</li>
+          <li><b>Rute Giliran:</b> Tiap ronde terdiri dari 6 aksi berurutan: Barat → Timur → Pusat → Timur → Barat → Pusat.</li>
+          <li><b>Tukar Kartu:</b> Pilih 1 kartu di distrik yang sedang aktif dan 1 kartu di tangan, lalu klik <i>Tukar Kartu</i>.</li>
+          <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
+          <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
+          <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 pt</b> pada baris yang membentuk kombinasi sah.</li>
+          <li><b>Deck Ronde:</b> Di akhir tiap ronde (tiap 6 aksi), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Permainan selesai setelah 5 ronde.</li>
+        </ul>
+        <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()">Kembali ke Permainan</button>
+      </div>
     </div>
   </div>
+
   <script type="text/javascript" src="citydomino_data.js?v=1"></script>
   <script>
     /* -------------------------------------------------------------
-       STATE PERMAINAN
+       STATE PERMAINAN UTAMA
     ------------------------------------------------------------- */
     const state = {
       specialCard: null,
@@ -413,7 +469,6 @@
       return { comboName: bestComboName, points: bestScore };
     }
 
-    // Evaluasi Kebahagiaan per Distrik (Makro 30 Petak: 4 Syarat x 25%)
     function evaluateDistrictHappiness(poolCards, poolKey) {
       const vals = [];
       poolCards.forEach(c => {
@@ -444,7 +499,6 @@
       if (hasEco) happyScore += 25;
       if (hasFav) happyScore += 25;
 
-      // Daftar kekurangan jika happiness < 100%
       const needs = [];
       if (!hasRth) needs.push(0);
       if (!hasSrv) needs.push(3);
@@ -458,7 +512,6 @@
       };
     }
 
-    // Evaluasi Total Distrik (Skor Poker x % Kebahagiaan Distrik)
     function evaluatePool(poolCards, poolKey) {
       let rawPoolScore = 0;
       const linesInfo = [];
@@ -483,8 +536,6 @@
       }
 
       const happyData = evaluateDistrictHappiness(poolCards, poolKey);
-
-      // Skor akhir distrik dipotong proporsional jika happiness di bawah 100%
       const effectiveScore = Math.round(rawPoolScore * (happyData.happyScore / 100));
 
       return {
@@ -496,7 +547,7 @@
     }
 
     /* -------------------------------------------------------------
-       RENDER FUNGSI
+       RENDER FUNGSI PERMAINAN UTAMA
     ------------------------------------------------------------- */
     function renderRouteAndStats() {
       const rContainer = document.getElementById('route-container');
@@ -575,11 +626,9 @@
         const evalData = evaluatePool(state.pools[poolKey], poolKey);
         const dHappy = evalData.happiness.happyScore;
 
-        // 1. Update Skor Distrik
         const scoreEl = document.getElementById(`score-${poolKey}`);
         scoreEl.innerText = `${evalData.total} pt`;
 
-        // 2. Update Badge Kebahagiaan Distrik
         const happyBadge = document.getElementById(`happy-${poolKey}`);
         const happyClass = dHappy >= 70? 'happy-safe': (dHappy >= 50? 'happy-warn': 'happy-danger');
         const happyEmoji = dHappy >= 70? '😊': (dHappy >= 50? '😐': '⚠️');
@@ -587,7 +636,6 @@
         happyBadge.className = `district-happy-badge ${happyClass}`;
         happyBadge.innerText = `${happyEmoji} ${dHappy}%`;
 
-        // 3. Render 3 Baris Domino
         for (let r = 0; r < 3; r++) {
           const rowPair = document.createElement('div');
           rowPair.className = 'domino-row-pair';
@@ -604,7 +652,6 @@
 
           rowPair.appendChild(track);
 
-          // Panel Skor Poker Samping
           const sidebar = document.createElement('div');
           sidebar.className = 'row-score-sidebar';
 
@@ -851,7 +898,7 @@
 
       contentEl.innerHTML = `
         <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-          <span>Skor Master Plan :</span>
+          <span>Skor Master Plan:</span>
           <b style="color:#ffffff;">${raw} pt</b>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
@@ -965,7 +1012,7 @@
     });
 
     /* -------------------------------------------------------------
-       INTERAKSI & ALUR PERMAINAN
+       INTERAKSI & ALUR PERMAINAN UTAMA
     ------------------------------------------------------------- */
     function updateActiveDistrictClass() {
       const activeDistrict = ROUTE[state.stepInRound];
@@ -1111,11 +1158,11 @@
     /* -------------------------------------------------------------
        WILD NUMBER MANUAL PICKER
     ------------------------------------------------------------- */
-    function openWildPicker(card, propKey) {
+    function openWildPicker(card, propKey, isTutorial = false) {
       hideComboBalloon();
       hideAspirationBalloon();
       hideScoreBalloon();
-      state.activeWildPicker = { card, propKey };
+      state.activeWildPicker = { card, propKey, isTutorial };
       const container = document.getElementById('wild-picker-options');
       container.innerHTML = '';
 
@@ -1133,7 +1180,11 @@
         btn.onclick = () => {
           card[propKey] = v;
           closeWildPicker();
-          renderAll();
+          if (isTutorial) {
+            onTutWildPicked(v);
+          } else {
+            renderAll();
+          }
         };
         container.appendChild(btn);
       }
@@ -1188,7 +1239,6 @@
       const statusLabel = document.getElementById('city-status-label');
       const cityTitleEl = document.getElementById('city-title');
 
-      // Evaluasi Syarat Kalah: Ada distrik dengan Happiness < 50%
       const failedDistricts = [];
       if (leftHappy < 50) failedDistricts.push('Distrik Barat');
       if (centerHappy < 50) failedDistricts.push('Pusat Kota');
@@ -1234,10 +1284,381 @@
       hideAspirationBalloon();
       hideScoreBalloon();
       document.getElementById('help-modal').style.display = 'flex';
+      if (!tutState.poolCards || tutState.poolCards.length === 0) {
+        loadTutStep(1);
+      }
     }
 
     function closeHelpModal() {
       document.getElementById('help-modal').style.display = 'none';
+    }
+
+    function switchHelpTab(tabKey) {
+      const tabTut = document.getElementById('tab-btn-tut');
+      const tabRules = document.getElementById('tab-btn-rules');
+      const paneTut = document.getElementById('pane-tutorial');
+      const paneRules = document.getElementById('pane-rules');
+
+      if (tabKey === 'tutorial') {
+        tabTut.classList.add('active');
+        tabRules.classList.remove('active');
+        paneTut.classList.add('active');
+        paneRules.classList.remove('active');
+      } else {
+        tabRules.classList.add('active');
+        tabTut.classList.remove('active');
+        paneRules.classList.add('active');
+        paneTut.classList.remove('active');
+      }
+    }
+
+    /* -------------------------------------------------------------
+       MODUL LATIHAN INTERAKTIF (MINI PUZZLE TUTORIAL)
+    ------------------------------------------------------------- */
+    const tutState = {
+      currentStep: 1,
+      isCompleted: false,
+      selectedPoolIdx: null,
+      selectedHandIdx: null,
+      poolCards: [],
+      handCards: []
+    };
+
+    function getTutHappiness() {
+      if (tutState.currentStep === 1) {
+        return { label: '😊 100% Warga Senang', class: 'happy-safe' };
+      }
+      if (tutState.currentStep === 2) {
+        const hasOneTop = tutState.poolCards.some(c => c.topVal === 1);
+        if (hasOneTop) {
+          return { label: '😊 75% Warga Puas (+50%)', class: 'happy-safe' };
+        }
+        return { label: '⚠️ 25% Krisis (Butuh 1)', class: 'happy-danger' };
+      }
+      return { label: '😊 100% Sejahtera', class: 'happy-safe' };
+    }
+
+    function loadTutStep(stepNum) {
+      tutState.currentStep = stepNum;
+      tutState.isCompleted = false;
+      tutState.selectedPoolIdx = null;
+      tutState.selectedHandIdx = null;
+
+      for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`tut-dot-${i}`);
+        if (dot) {
+          if (i === stepNum) dot.classList.add('active');
+          else dot.classList.remove('active');
+        }
+      }
+
+      const fb = document.getElementById('tut-feedback');
+      fb.style.display = 'none';
+
+      const titleEl = document.getElementById('tut-title');
+      const descEl = document.getElementById('tut-desc');
+      const statusEl = document.getElementById('tut-district-status');
+
+      if (stepNum === 1) {
+        titleEl.innerText = "Tantangan 1: Cetak Poin Poker";
+        descEl.innerHTML = "Pilih kartu tangan <b>[4 | 0]</b>, lalu pilih kartu <b>[2 | 6]</b> di petak terakhir baris untuk membuat <b>Five of a Kind (4-4-4-4-4)</b> di baris atas!";
+        statusEl.innerText = "Target: Five of a Kind (+30 pt)";
+
+        tutState.poolCards = [
+          { topVal: 4, topCol: 'blue', botVal: 1, botCol: 'green', topIsWild: false, botIsWild: false },
+          { topVal: 4, topCol: 'green', botVal: 2, botCol: 'red', topIsWild: false, botIsWild: false },
+          { topVal: 4, topCol: 'amber', botVal: 3, botCol: 'blue', topIsWild: false, botIsWild: false },
+          { topVal: 4, topCol: 'red', botVal: 5, botCol: 'green', topIsWild: false, botIsWild: false },
+          { topVal: 2, topCol: 'blue', botVal: 6, botCol: 'red', topIsWild: false, botIsWild: false }
+        ];
+        tutState.handCards = [
+          { topVal: 4, topCol: 'blue', botVal: 0, botCol: 'green', topIsWild: false, botIsWild: false }
+        ];
+      } else if (stepNum === 2) {
+        titleEl.innerText = "Tantangan 2: Putar Kartu & Warga";
+        descEl.innerHTML = "Distrik ini sedang krisis (Happiness <b>25%</b>) karena kekurangan Rumah Tapak (angka 1). Klik <b>🔄 Putar</b> pada kartu tangan agar angka 1 berada di atas, lalu tukar ke petak ke-3 untuk menaikkan kepuasan warga!";
+        statusEl.innerText = "Target: Naikkan Happiness ≥ 50%";
+
+        tutState.poolCards = [
+          { topVal: 0, topCol: 'blue', botVal: 6, botCol: 'green', topIsWild: false, botIsWild: false },
+          { topVal: 3, topCol: 'green', botVal: 4, botCol: 'red', topIsWild: false, botIsWild: false },
+          { topVal: 5, topCol: 'amber', botVal: 2, botCol: 'blue', topIsWild: false, botIsWild: false },
+          { topVal: 0, topCol: 'red', botVal: 3, botCol: 'green', topIsWild: false, botIsWild: false },
+          { topVal: 6, topCol: 'blue', botVal: 0, botCol: 'red', topIsWild: false, botIsWild: false }
+        ];
+        tutState.handCards = [
+          { topVal: 5, topCol: 'amber', botVal: 1, botCol: 'green', topIsWild: false, botIsWild: false }
+        ];
+      } else if (stepNum === 3) {
+        titleEl.innerText = "Tantangan 3: Kekuatan Bintang (Wild ⭐)";
+        descEl.innerHTML = "Petak ⭐ adalah Wild Angka. Klik petak ⭐ pada kartu ke-3, lalu pilih angka <b>3</b> pada jendela opsi untuk melengkapi <b>Straight Flush (1-2-3-4-5 Biru)</b>!";
+        statusEl.innerText = "Target: Ubah ⭐ jadi 3";
+
+        tutState.poolCards = [
+          { topVal: 1, topCol: 'blue', botVal: 2, botCol: 'green', topIsWild: false, botIsWild: false },
+          { topVal: 2, topCol: 'blue', botVal: 3, botCol: 'red', topIsWild: false, botIsWild: false },
+          { topVal: 0, topCol: 'blue', botVal: 4, botCol: 'green', topIsWild: true, botIsWild: false },
+          { topVal: 4, topCol: 'blue', botVal: 5, botCol: 'red', topIsWild: false, botIsWild: false },
+          { topVal: 5, topCol: 'blue', botVal: 6, botCol: 'green', topIsWild: false, botIsWild: false }
+        ];
+        tutState.handCards = [];
+      }
+
+      renderTutSandbox();
+    }
+
+    function createTutDomino(card, isDistrict = false, idx = 0) {
+      const dom = document.createElement('div');
+      dom.className = 'domino';
+
+      const topHalf = document.createElement('div');
+      topHalf.className = `domino-half c-${card.topCol}${card.topIsWild? ' is-wild': ''}`;
+      topHalf.innerHTML = `
+        ${getBuildingSvg(card.topVal, 17)}
+        <span class="domino-num">${card.topVal}</span>
+        ${card.topIsWild? '<span class="super-wild-tag">⭐</span>': ''}
+      `;
+      if (card.topIsWild) {
+        topHalf.title = "Wild Angka: Klik untuk ganti angka";
+        topHalf.onclick = (e) => {
+          e.stopPropagation();
+          openWildPicker(card, 'topVal', true);
+        };
+      }
+
+      const botHalf = document.createElement('div');
+      botHalf.className = `domino-half c-${card.botCol}${card.botIsWild? ' is-wild': ''}`;
+      botHalf.innerHTML = `
+        ${getBuildingSvg(card.botVal, 17)}
+        <span class="domino-num">${card.botVal}</span>
+        ${card.botIsWild? '<span class="super-wild-tag">⭐</span>': ''}
+      `;
+      if (card.botIsWild) {
+        botHalf.title = "Wild Angka: Klik untuk ganti angka";
+        botHalf.onclick = (e) => {
+          e.stopPropagation();
+          openWildPicker(card, 'botVal', true);
+        };
+      }
+
+      dom.appendChild(topHalf);
+      dom.appendChild(botHalf);
+
+      if (isDistrict) {
+        if (tutState.selectedPoolIdx === idx) {
+          dom.classList.add('selected-tile');
+        }
+        dom.onclick = () => onTutDistrictTileClick(idx);
+      } else {
+        if (tutState.selectedHandIdx === idx) {
+          dom.classList.add('selected-tile');
+        }
+        dom.onclick = () => onTutHandTileClick(idx);
+      }
+
+      return dom;
+    }
+
+    function renderTutSandbox() {
+      const dRow = document.getElementById('tut-district-row');
+      dRow.innerHTML = '';
+
+      const happyInfo = getTutHappiness();
+      const happyBadge = document.getElementById('tut-happy-badge');
+      if (happyBadge) {
+        happyBadge.className = `district-happy-badge ${happyInfo.class}`;
+        happyBadge.innerText = happyInfo.label;
+      }
+
+      const track = document.createElement('div');
+      track.className = 'domino-tiles-track';
+      tutState.poolCards.forEach((c, idx) => {
+        track.appendChild(createTutDomino(c, true, idx));
+      });
+      dRow.appendChild(track);
+
+      const topCells = tutState.poolCards.map(c => ({ val: c.topVal, col: c.topCol }));
+      const botCells = tutState.poolCards.map(c => ({ val: c.botVal, col: c.botCol }));
+
+      const evaluateTutLine = (cells) => {
+        let bestScore = 0;
+        let bestName = "Nihil";
+        const allCombos = ['straight_flush', 'five_kind', 'four_kind', 'full_house', 'flush', 'straight', 'color_boat', 'three_kind', 'two_pair', 'one_pair'];
+        for (const id of allCombos) {
+          const match = checkCombo(cells, id);
+          if (match.isValid) {
+            if (MASTER_COMBOS[id].pts > bestScore) {
+              bestScore = MASTER_COMBOS[id].pts;
+              bestName = MASTER_COMBOS[id].name;
+            }
+          }
+        }
+        return { name: bestName, pts: bestScore };
+      };
+
+      const topEval = evaluateTutLine(topCells);
+      const botEval = evaluateTutLine(botCells);
+
+      const sidebar = document.createElement('div');
+      sidebar.className = 'row-score-sidebar';
+
+      const topBadge = document.createElement('div');
+      topBadge.className = `line-score-badge ${topEval.pts > 0? 'has-score': ''}`;
+      topBadge.innerHTML = `<span>${topEval.name}</span><span class="line-score-pts">${topEval.pts}</span>`;
+
+      const botBadge = document.createElement('div');
+      botBadge.className = `line-score-badge ${botEval.pts > 0? 'has-score': ''}`;
+      botBadge.innerHTML = `<span>${botEval.name}</span><span class="line-score-pts">${botEval.pts}</span>`;
+
+      sidebar.appendChild(topBadge);
+      sidebar.appendChild(botBadge);
+      dRow.appendChild(sidebar);
+
+      const hRow = document.getElementById('tut-hand-row');
+      hRow.innerHTML = '';
+      const handBox = document.getElementById('tut-hand-box');
+
+      if (tutState.currentStep === 3) {
+        handBox.style.display = 'none';
+      } else {
+        handBox.style.display = 'flex';
+        tutState.handCards.forEach((c, idx) => {
+          const wrap = document.createElement('div');
+          wrap.className = 'hand-domino-wrapper';
+
+          const dom = createTutDomino(c, false, idx);
+          dom.ondblclick = (e) => {
+            e.stopPropagation();
+            flipTutHandCard(idx);
+          };
+
+          const rotBtn = document.createElement('button');
+          rotBtn.className = 'btn-rotate-mini';
+          rotBtn.innerText = '🔄 Putar';
+          rotBtn.onclick = (e) => {
+            e.stopPropagation();
+            flipTutHandCard(idx);
+          };
+
+          wrap.appendChild(dom);
+          wrap.appendChild(rotBtn);
+          hRow.appendChild(wrap);
+        });
+      }
+
+      const btnAction = document.getElementById('btn-tut-action');
+      if (btnAction) {
+        btnAction.disabled = (tutState.selectedPoolIdx === null || tutState.selectedHandIdx === null || tutState.isCompleted);
+      }
+    }
+
+    function onTutDistrictTileClick(idx) {
+      if (tutState.isCompleted || tutState.currentStep === 3) return;
+      tutState.selectedPoolIdx = (tutState.selectedPoolIdx === idx)? null: idx;
+      renderTutSandbox();
+    }
+
+    function onTutHandTileClick(idx) {
+      if (tutState.isCompleted) return;
+      tutState.selectedHandIdx = (tutState.selectedHandIdx === idx)? null: idx;
+      renderTutSandbox();
+    }
+
+    function flipTutHandCard(idx) {
+      const card = tutState.handCards[idx];
+      const tempVal = card.topVal;
+      const tempCol = card.topCol;
+      const tempWild = card.topIsWild;
+
+      card.topVal = card.botVal;
+      card.topCol = card.botCol;
+      card.topIsWild = card.botIsWild;
+
+      card.botVal = tempVal;
+      card.botCol = tempCol;
+      card.botIsWild = tempWild;
+
+      renderTutSandbox();
+    }
+
+    function executeTutAction() {
+      if (tutState.selectedPoolIdx === null || tutState.selectedHandIdx === null || tutState.isCompleted) return;
+
+      const pIdx = tutState.selectedPoolIdx;
+      const hIdx = tutState.selectedHandIdx;
+
+      const tempCard = tutState.poolCards[pIdx];
+      tutState.poolCards[pIdx] = tutState.handCards[hIdx];
+      tutState.handCards[hIdx] = tempCard;
+
+      tutState.selectedPoolIdx = null;
+      tutState.selectedHandIdx = null;
+
+      renderTutSandbox();
+
+      const fb = document.getElementById('tut-feedback');
+      const fbText = document.getElementById('tut-feedback-text');
+      const btnNext = document.getElementById('btn-tut-next');
+      btnNext.onclick = nextTutStep;
+
+      if (tutState.currentStep === 1) {
+        const allFours = tutState.poolCards.every(c => c.topVal === 4);
+        if (allFours) {
+          tutState.isCompleted = true;
+          fb.style.display = 'flex';
+          fbText.innerHTML = "🎉 <b>Five of a Kind terbentuk (+30 pt)!</b> Baris atas dan bawah dinilai secara mandiri.";
+          btnNext.innerText = "Lanjut ke Tantangan 2 ➔";
+        } else {
+          fb.style.display = 'flex';
+          fbText.innerHTML = "⚠️ Belum Five of a Kind. Klik <b>↺ Ulangi</b> lalu tukar dengan petak ke-5 yang bernilai 2.";
+          btnNext.innerText = "Tutup Info";
+          btnNext.onclick = () => { fb.style.display = 'none'; };
+        }
+      } else if (tutState.currentStep === 2) {
+        if (tutState.poolCards[2].topVal === 1) {
+          tutState.isCompleted = true;
+          fb.style.display = 'flex';
+          fbText.innerHTML = "🎉 <b>Happiness naik ke 75%!</b> Memutar kartu 180° memastikan zonasi yang dibutuhkan warga masuk ke posisi yang tepat. Ingat: minimal 50% di akhir game agar tidak kalah!";
+          btnNext.innerText = "Lanjut ke Tantangan 3 ➔";
+        } else {
+          fb.style.display = 'flex';
+          fbText.innerHTML = "⚠️ Angka 1 belum berada di atas (Happiness masih 25%). Klik <b>↺ Ulangi</b>, tekan 🔄 pada kartu tangan, lalu tukar ke petak ke-3.";
+          btnNext.innerText = "Tutup Info";
+          btnNext.onclick = () => { fb.style.display = 'none'; };
+        }
+      }
+    }
+
+    function onTutWildPicked(val) {
+      renderTutSandbox();
+      const fb = document.getElementById('tut-feedback');
+      const fbText = document.getElementById('tut-feedback-text');
+      const btnNext = document.getElementById('btn-tut-next');
+
+      if (val === 3) {
+        tutState.isCompleted = true;
+        fb.style.display = 'flex';
+        fbText.innerHTML = "🎉 <b>Straight Flush 40 pt aktif!</b> Angka petak ⭐ bisa kamu ubah kapan saja tanpa memakan giliran aksi.";
+        btnNext.innerText = "Selesai & Mulai Main! 🚀";
+        btnNext.onclick = nextTutStep;
+      } else {
+        fb.style.display = 'flex';
+        fbText.innerHTML = `⚠️ Petak berubah jadi ${val}. Klik ⭐ lagi lalu pilih angka <b>3</b> untuk melengkapi urutan Straight Flush (1-2-3-4-5).`;
+        btnNext.innerText = "Oke";
+        btnNext.onclick = () => { fb.style.display = 'none'; };
+      }
+    }
+
+    function nextTutStep() {
+      if (tutState.currentStep < 3) {
+        loadTutStep(tutState.currentStep + 1);
+      } else {
+        closeHelpModal();
+      }
+    }
+
+    function resetTutStep() {
+      loadTutStep(tutState.currentStep);
     }
 
     window.onload = () => {
