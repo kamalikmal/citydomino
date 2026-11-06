@@ -788,7 +788,7 @@
         evalData.needs.forEach(val => {
           const item = document.createElement('div');
           item.className = 'aspirasi-item';
-          item.innerHTML = `<span>Butuh  ${getBuildingSvg(val, 16)}${val}</span>`;
+          item.innerHTML = `<span>Butuh (${getBuildingSvg(val, 16)}${val})</span>`;
           contentEl.appendChild(item);
         });
       }
@@ -851,7 +851,7 @@
 
       contentEl.innerHTML = `
         <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-          <span>Skor Poker Murni:</span>
+          <span>Skor Master Plan :</span>
           <b style="color:#ffffff;">${raw} pt</b>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
