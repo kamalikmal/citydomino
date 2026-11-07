@@ -116,7 +116,7 @@
       </div>
       <div class="timer-section">
         <div class="timer-header-row">
-          <span>DECK RONDE</span>
+          <span>DECK</span>
           <span id="timer-slots-label">5/5 Tersedia</span>
         </div>
         <div class="timer-cards-track" id="timer-slots-container"></div>
@@ -215,18 +215,62 @@
       <!-- Tab 1: Latihan Interaktif -->
       <div class="help-tab-pane active" id="pane-tutorial">
         <div class="tut-stepper">
-          <div class="tut-step-dot active" id="tut-dot-1" onclick="loadTutStep(1)">1. Poker & Swap</div>
-          <div class="tut-step-dot" id="tut-dot-2" onclick="loadTutStep(2)">2. Putar & Warga</div>
-          <div class="tut-step-dot" id="tut-dot-3" onclick="loadTutStep(3)">3. Wild ⭐</div>
+          <div class="tut-step-dot active" id="tut-dot-1" onclick="loadTutStep(1)">1. Premis & Layar</div>
+          <div class="tut-step-dot" id="tut-dot-2" onclick="loadTutStep(2)">2. Poker & Tukar</div>
+          <div class="tut-step-dot" id="tut-dot-3" onclick="loadTutStep(3)">3. Putar & Warga</div>
+          <div class="tut-step-dot" id="tut-dot-4" onclick="loadTutStep(4)">4. Wild ⭐</div>
         </div>
 
         <div class="tut-instruction-card">
-          <div class="tut-instruction-title" id="tut-title">Tantangan 1: Cetak Poin Poker</div>
-          <div class="tut-instruction-desc" id="tut-desc">Pilih kartu tangan, lalu pilih kartu di distrik untuk membuat kombinasi Five of a Kind!</div>
+          <div class="tut-instruction-title" id="tut-title">Langkah 1: Premis & Antarmuka Kota</div>
+          <div class="tut-instruction-desc" id="tut-desc">
+            Kamu adalah Walikota yang merancang 3 distrik selama 6 ronde (total 18 aksi). Angka domino (0–6) mewakili zonasi kota. Capai target skor Master Plan tertinggi dan jaga <b>Kebahagiaan Warga minimal 50%</b> agar kota tidak kolaps!
+          </div>
         </div>
 
-        <!-- Sandbox Baris Distrik -->
-        <div class="tut-sandbox-box">
+        <!-- Wadah Khusus Langkah 1: Miniatur Anatomi Grid 3x2 -->
+        <div class="tut-sandbox-box" id="tut-overview-container">
+          <div class="tut-overview-container">
+            <div class="tut-premis-card">
+              <b>Tujuan Utama:</b> Susun kombinasi Sesuai Master Plan di 3 distrik kota sambil menyeimbangkan kebutuhan fasilitas publik warga.
+            </div>
+            <div class="tut-wf-wrap">
+              <div class="tut-wf-header">HEADER: RUTE AKTIF (Urutan distrik yang dibangun pada ronde berjalan)</div>
+              <div class="tut-wf-grid">
+                <div class="tut-wf-cell cell-district">
+                  <span class="tut-wf-title">Distrik Barat</span>
+                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                </div>
+                <div class="tut-wf-cell cell-district">
+                  <span class="tut-wf-title">Pusat Kota</span>
+                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                </div>
+                <div class="tut-wf-cell cell-district">
+                  <span class="tut-wf-title">Distrik Timur</span>
+                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                </div>
+                <div class="tut-wf-cell">
+                  <span class="tut-wf-title">Master Plan</span>
+                  <span class="tut-wf-sub">Target Poin Kota</span>
+                </div>
+                <div class="tut-wf-cell">
+                  <span class="tut-wf-title">Tangan Pemain</span>
+                  <span class="tut-wf-sub">5 Kartu (Aksi Tukar/Putar)</span>
+                </div>
+                <div class="tut-wf-cell">
+                  <span class="tut-wf-title">Khusus & Deck</span>
+                  <span class="tut-wf-sub">Wild ⭐ & Sisa Deck</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="actions-bar tut-action-bar">
+            <button class="btn-main" onclick="loadTutStep(2)">Mulai Latihan Praktik ➔</button>
+          </div>
+        </div>
+
+        <!-- Sandbox Baris Distrik (Langkah 2, 3, 4) -->
+        <div class="tut-sandbox-box" id="tut-district-box" style="display:none;">
           <div class="tut-sublabel-row">
             <div style="display:flex; align-items:center; gap:6px;">
               <span>Simulasi Distrik:</span>
@@ -237,8 +281,8 @@
           <div class="tut-district-row" id="tut-district-row"></div>
         </div>
 
-        <!-- Sandbox Kartu Tangan & Aksi -->
-        <div class="tut-sandbox-box" id="tut-hand-box">
+        <!-- Sandbox Kartu Tangan & Aksi (Langkah 2, 3) -->
+        <div class="tut-sandbox-box" id="tut-hand-box" style="display:none;">
           <div class="tut-sublabel-row">
             <span>Kartu di Tangan:</span>
             <span style="font-size:0.6rem; color:var(--text-muted);">Double klik atau 🔄 untuk putar</span>
@@ -279,7 +323,7 @@
           <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
           <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
           <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 pt</b> pada baris yang membentuk kombinasi sah.</li>
-          <li><b>Deck Ronde:</b> Di akhir ronde 1 sampai 5 (tepat 5 kali jeda), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Di akhir ronde 6, evaluasi akhir langsung dilakukan.</li>
+          <li><b>Deck:</b> Di akhir ronde 1 sampai 5 (tepat 5 kali jeda), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Di akhir ronde 6, evaluasi akhir langsung dilakukan.</li>
         </ul>
         <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()">Kembali ke Permainan</button>
       </div>
@@ -745,7 +789,7 @@
         const slot = document.createElement('div');
         if (i < sisa) {
           slot.className = 'timer-slot-card has-card';
-          slot.innerText = `Deck ${i + 1}`;
+          slot.innerText = `Kartu ${i + 1}`;
         } else {
           slot.className = 'timer-slot-card';
           slot.innerText = '✓';
@@ -1491,7 +1535,8 @@
       hideAspirationBalloon();
       hideScoreBalloon();
       document.getElementById('help-modal').style.display = 'flex';
-      if (!tutState.poolCards || tutState.poolCards.length === 0) {
+      if (!tutState.initialized) {
+        tutState.initialized = true;
         loadTutStep(1);
       }
     }
@@ -1520,9 +1565,10 @@
     }
 
     /* -------------------------------------------------------------
-       MODUL LATIHAN INTERAKTIF (MINI PUZZLE TUTORIAL)
+       MODUL LATIHAN INTERAKTIF (TUTORIAL 4 LANGKAH)
     ------------------------------------------------------------- */
     const tutState = {
+      initialized: false,
       currentStep: 1,
       isCompleted: false,
       selectedPoolIdx: null,
@@ -1532,10 +1578,10 @@
     };
 
     function getTutHappiness() {
-      if (tutState.currentStep === 1) {
+      if (tutState.currentStep === 1 || tutState.currentStep === 2) {
         return { label: '😊 100% Warga Senang', class: 'happy-safe' };
       }
-      if (tutState.currentStep === 2) {
+      if (tutState.currentStep === 3) {
         const hasOneTop = tutState.poolCards.some(c => c.topVal === 1);
         if (hasOneTop) {
           return { label: '😊 75% Warga Puas (+50%)', class: 'happy-safe' };
@@ -1551,7 +1597,7 @@
       tutState.selectedPoolIdx = null;
       tutState.selectedHandIdx = null;
 
-      for (let i = 1; i <= 3; i++) {
+      for (let i = 1; i <= 4; i++) {
         const dot = document.getElementById(`tut-dot-${i}`);
         if (dot) {
           if (i === stepNum) dot.classList.add('active');
@@ -1566,9 +1612,29 @@
       const descEl = document.getElementById('tut-desc');
       const statusEl = document.getElementById('tut-district-status');
 
+      const overviewBox = document.getElementById('tut-overview-container');
+      const districtBox = document.getElementById('tut-district-box');
+      const handBox = document.getElementById('tut-hand-box');
+
       if (stepNum === 1) {
-        titleEl.innerText = "Tantangan 1: Cetak Poin Poker";
-        descEl.innerHTML = "Pilih kartu tangan <b>[4 | 0]</b>, lalu pilih kartu <b>[2 | 6]</b> di petak terakhir baris untuk membuat <b>Five of a Kind (4-4-4-4-4)</b> di baris atas!";
+        titleEl.innerText = "Langkah 1: Premis & Antarmuka Kota";
+        descEl.innerHTML = "Kamu adalah Walikota yang merancang 3 distrik selama 6 ronde (total 18 aksi). Angka domino (0–6) mewakili zonasi kota. Capai target skor poker tertinggi dan jaga <b>Kebahagiaan Warga minimal 50%</b> agar kota tidak kolaps!";
+        
+        overviewBox.style.display = 'flex';
+        districtBox.style.display = 'none';
+        handBox.style.display = 'none';
+
+        tutState.poolCards = [];
+        tutState.handCards = [];
+        return;
+      }
+
+      overviewBox.style.display = 'none';
+      districtBox.style.display = 'flex';
+
+      if (stepNum === 2) {
+        titleEl.innerText = "Langkah 2: Skor Poker & Tukar Kartu";
+        descEl.innerHTML = "Pilih kartu tangan <b>[4 | 0]</b>, lalu pilih kartu <b>[2 | 6]</b> di petak ke-5 untuk membentuk <b>Five of a Kind (4-4-4-4-4)</b> di baris atas!<div class='tut-click-tip'>💡 <b>Info:</b> Angka skor di header distrik bisa kamu klik untuk melihat rincian kombinasi & perkalian skornya.</div>";
         statusEl.innerText = "Target: Five of a Kind (+30 pt)";
 
         tutState.poolCards = [
@@ -1581,9 +1647,9 @@
         tutState.handCards = [
           { topVal: 4, topCol: 'blue', botVal: 0, botCol: 'green', topIsWild: false, botIsWild: false }
         ];
-      } else if (stepNum === 2) {
-        titleEl.innerText = "Tantangan 2: Putar Kartu & Warga";
-        descEl.innerHTML = "Distrik ini sedang krisis (Happiness <b>25%</b>) karena kekurangan Rumah Tapak (angka 1). Klik <b>🔄 Putar</b> pada kartu tangan agar angka 1 berada di atas, lalu tukar ke petak ke-3 untuk menaikkan kepuasan warga!";
+      } else if (stepNum === 3) {
+        titleEl.innerText = "Langkah 3: Putar Kartu & Kepuasan Warga";
+        descEl.innerHTML = "Distrik ini sedang krisis (Happiness <b>25%</b>) karena kekurangan Rumah Tapak (angka 1). Klik <b>🔄 Putar</b> pada kartu tangan agar angka 1 berada di atas, lalu tukar ke petak ke-3 untuk menaikkan kepuasan warga!<div class='tut-click-tip'>💡 <b>Info:</b> Badge status kepuasan (😊/⚠️) bisa kamu klik untuk melihat zonasi apa saja yang dibutuhkan warga.</div>";
         statusEl.innerText = "Target: Naikkan Happiness ≥ 50%";
 
         tutState.poolCards = [
@@ -1596,8 +1662,8 @@
         tutState.handCards = [
           { topVal: 5, topCol: 'amber', botVal: 1, botCol: 'green', topIsWild: false, botIsWild: false }
         ];
-      } else if (stepNum === 3) {
-        titleEl.innerText = "Tantangan 3: Kekuatan Bintang (Wild ⭐)";
+      } else if (stepNum === 4) {
+        titleEl.innerText = "Langkah 4: Kekuatan Bintang (Wild ⭐)";
         descEl.innerHTML = "Petak ⭐ adalah Wild Angka. Klik petak ⭐ pada kartu ke-3, lalu pilih angka <b>3</b> pada jendela opsi untuk melengkapi <b>Straight Flush (1-2-3-4-5 Biru)</b>!";
         statusEl.innerText = "Target: Ubah ⭐ jadi 3";
 
@@ -1725,7 +1791,7 @@
       hRow.innerHTML = '';
       const handBox = document.getElementById('tut-hand-box');
 
-      if (tutState.currentStep === 3) {
+      if (tutState.currentStep === 4) {
         handBox.style.display = 'none';
       } else {
         handBox.style.display = 'flex';
@@ -1760,7 +1826,7 @@
     }
 
     function onTutDistrictTileClick(idx) {
-      if (tutState.isCompleted || tutState.currentStep === 3) return;
+      if (tutState.isCompleted || tutState.currentStep === 4) return;
       tutState.selectedPoolIdx = (tutState.selectedPoolIdx === idx)? null: idx;
       renderTutSandbox();
     }
@@ -1808,25 +1874,25 @@
       const btnNext = document.getElementById('btn-tut-next');
       btnNext.onclick = nextTutStep;
 
-      if (tutState.currentStep === 1) {
+      if (tutState.currentStep === 2) {
         const allFours = tutState.poolCards.every(c => c.topVal === 4);
         if (allFours) {
           tutState.isCompleted = true;
           fb.style.display = 'flex';
           fbText.innerHTML = "🎉 <b>Five of a Kind terbentuk (+30 pt)!</b> Baris atas dan bawah dinilai secara mandiri.";
-          btnNext.innerText = "Lanjut ke Tantangan 2 ➔";
+          btnNext.innerText = "Lanjut ke Langkah 3 ➔";
         } else {
           fb.style.display = 'flex';
           fbText.innerHTML = "⚠️ Belum Five of a Kind. Klik <b>↺ Ulangi</b> lalu tukar dengan petak ke-5 yang bernilai 2.";
           btnNext.innerText = "Tutup Info";
           btnNext.onclick = () => { fb.style.display = 'none'; };
         }
-      } else if (tutState.currentStep === 2) {
+      } else if (tutState.currentStep === 3) {
         if (tutState.poolCards[2].topVal === 1) {
           tutState.isCompleted = true;
           fb.style.display = 'flex';
           fbText.innerHTML = "🎉 <b>Happiness naik ke 75%!</b> Memutar kartu 180° memastikan zonasi yang dibutuhkan warga masuk ke posisi yang tepat. Ingat: minimal 50% di akhir game agar tidak kalah!";
-          btnNext.innerText = "Lanjut ke Tantangan 3 ➔";
+          btnNext.innerText = "Lanjut ke Langkah 4 ➔";
         } else {
           fb.style.display = 'flex';
           fbText.innerHTML = "⚠️ Angka 1 belum berada di atas (Happiness masih 25%). Klik <b>↺ Ulangi</b>, tekan 🔄 pada kartu tangan, lalu tukar ke petak ke-3.";
@@ -1857,7 +1923,7 @@
     }
 
     function nextTutStep() {
-      if (tutState.currentStep < 3) {
+      if (tutState.currentStep < 4) {
         loadTutStep(tutState.currentStep + 1);
       } else {
         closeHelpModal();
