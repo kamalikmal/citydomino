@@ -3,20 +3,20 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>City Domino</title>
-  <link href="citydomino.css?v=1" type="text/css" rel="stylesheet" media="all">
+  <title>Domino City</title>
+  <link href="citydomino.css?v=2" type="text/css" rel="stylesheet" media="all">
 </head>
 <body>
 
-  <!-- 1. Header Terpadu: Judul (Kiri), Rute (Tengah), Status Ronde (Kanan) -->
+  <!-- 1. Header Terpadu: Judul (Kiri), Pembangunan Dinamis (Tengah), Status Ronde (Kanan) -->
   <header class="main-header">
     <div class="header-left">
-      <h1 class="game-title">City Domino</h1>
-      <button class="btn-help-mini" onclick="openHelpModal()">❓ Bantuan</button>
+      <h1 class="game-title">Domino City</h1>
+      <button class="btn-help-mini" onclick="openHelpModal()">❓ Tutorial</button>
     </div>
     <div class="route-center" id="route-container"></div>
     <div class="stats-right">
-      <div class="badge glow" id="round-indicator">Ronde 1/5</div>
+      <div class="badge glow" id="round-indicator">Ronde 1/6</div>
     </div>
   </header>
 
@@ -67,24 +67,22 @@
       <div id="grid-right" class="pool-grid-wrapper"></div>
     </div>
 
-    <!-- KOTAK 4: Arsip Khusus & Deck Ronde -->
-    <div class="box-panel box-bottom special-timer-panel">
-      <div class="panel-header-simple">
-        <span>KARTU KHUSUS & DECK</span>
-      </div>
-      <div class="special-section">
-        <div id="special-card-render"></div>
-        <div class="special-text">
-          <div>⭐ <b>Atas (Angka Bebas):</b> Klik petak ⭐ untuk ubah angka (0–6)</div><br>
-          <div><a style='color: #38bdf8;'>+3</a> <b>Bawah (Bonus +3):</b> Bonus poin pada baris sah.</div>
+    <!-- KOTAK 4: Master Plan & Peringkat Top 5 -->
+    <div class="box-panel box-bottom master-plan-box">
+      <div class="mp-header-bar">
+        <div class="mp-tabs-nav">
+          <button class="mp-tab-btn active" id="tab-btn-mp" onclick="switchMpTab('cards')">Master Plan</button>
+          <button class="mp-tab-btn" id="tab-btn-lb" onclick="switchMpTab('lb')">Top 5</button>
         </div>
+        <span class="mp-active-plan-badge" id="policy-name">-</span>
       </div>
-      <div class="timer-section">
-        <div class="timer-header-row">
-          <span>DECK</span>
-          <span id="timer-slots-label">5/5 Tersedia</span>
+      <div class="mp-pane active" id="pane-mp-cards">
+        <div class="mp-grid-box" id="mp-grid"></div>
+      </div>
+      <div class="mp-pane" id="pane-mp-lb">
+        <div class="leaderboard-view" id="lb-view-container">
+          <div class="lb-state-text">Memuat peringkat...</div>
         </div>
-        <div class="timer-cards-track" id="timer-slots-container"></div>
       </div>
     </div>
 
@@ -103,14 +101,26 @@
         <button class="btn-main" id="btn-action" disabled onclick="executeAction()">Tukar Kartu</button>
       </div>
     </div>
-
-    <!-- KOTAK 6: Master Plan Padat -->
-    <div class="box-panel box-bottom master-plan-box">
+	
+    <!-- KOTAK 6: Arsip Khusus & Deck Ronde -->
+    <div class="box-panel box-bottom special-timer-panel">
       <div class="panel-header-simple">
-        <span>MASTER PLAN <small>(URUTAN BEBAS)</small></span>
-        <span id="policy-name" style="color:var(--highlight);">-</span>
+        <span>KARTU KHUSUS & DECK</span>
       </div>
-      <div class="mp-grid-box" id="mp-grid"></div>
+      <div class="special-section">
+        <div id="special-card-render"></div>
+        <div class="special-text">
+          <div>⭐ <b>Atas (Angka Bebas):</b> Klik petak ⭐ untuk ubah angka (0–6)</div><br>
+          <div><a style='color: #38bdf8;'>+3</a> <b>Bawah (Bonus +3):</b> Bonus poin pada baris sah.</div>
+        </div>
+      </div>
+      <div class="timer-section">
+        <div class="timer-header-row">
+          <span>DECK RONDE</span>
+          <span id="timer-slots-label">5/5 Tersedia</span>
+        </div>
+        <div class="timer-cards-track" id="timer-slots-container"></div>
+      </div>
     </div>
   </main>
 
@@ -150,7 +160,7 @@
     <div class="modal-card">
       <div class="modal-title" id="final-modal-title">EVALUASI AKHIR KOTA</div>
       <div id="final-modal-desc" style="font-size:0.8rem; color:var(--text-muted);">
-        Semua 5 ronde (30 aksi) selesai. Berikut rincian capaian kotamu:
+        Semua 6 ronde (18 aksi) selesai. Berikut rincian capaian kotamu:
       </div>
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
@@ -183,11 +193,15 @@
         <span id="city-status-label" style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;">Predikat Kota:</span>
         <div id="city-title" style="font-size:1rem; font-weight:900; color:#facc15; margin-top:2px;">Metropolis Terencana</div>
       </div>
+
+      <!-- Blok Catat Rekor Leaderboard -->
+      <div id="lb-submit-container"></div>
+
       <button class="btn-main" style="width:100%;" onclick="restartGame()">Mulai Sesi Baru</button>
     </div>
   </div>
 
-  <!-- Modal Bantuan Aturan & Latihan Interaktif -->
+  <!-- Modal Tutorial Aturan & Latihan Interaktif -->
   <div class="modal-overlay" id="help-modal">
     <div class="modal-card modal-help-card">
       <div class="modal-help-header">
@@ -257,12 +271,15 @@
           </li>
           <li><b>Aspirasi Warga:</b> Klik badge Happiness di header tiap distrik untuk melihat apa saja angka yang masih dibutuhkan warga di distrik tersebut. Jika kebutuhan terpenuhi sempurna, warga merasa senang!</li>
           <li><b>Syarat Kalah (Fail-State):</b> Jika saat permainan berakhir terdapat <b>minimal 1 distrik</b> dengan Happiness di bawah <b>50%</b>, permainan langsung dihitung <b>KALAH (Kerusuhan Kota)</b>.</li>
-          <li><b>Rute Giliran:</b> Tiap ronde terdiri dari 6 aksi berurutan: Barat → Timur → Pusat → Timur → Barat → Pusat.</li>
+          <li><b>Pembangunan:</b> Game berlangsung selama <b>6 ronde</b> dengan <b>3 aksi</b> per ronde:
+            <br>• <b>Ronde Ganjil (1, 3, 5):</b> Barat → Timur → Pusat.
+            <br>• <b>Ronde Genap (2, 4, 6):</b> Timur → Barat → Pusat.
+          </li>
           <li><b>Tukar Kartu:</b> Pilih 1 kartu di distrik yang sedang aktif dan 1 kartu di tangan, lalu klik <i>Tukar Kartu</i>.</li>
           <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
           <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
           <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 pt</b> pada baris yang membentuk kombinasi sah.</li>
-          <li><b>Deck Ronde:</b> Di akhir tiap ronde (tiap 6 aksi), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Permainan selesai setelah 5 ronde.</li>
+          <li><b>Deck Ronde:</b> Di akhir ronde 1 sampai 5 (tepat 5 kali jeda), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Di akhir ronde 6, evaluasi akhir langsung dilakukan.</li>
         </ul>
         <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()">Kembali ke Permainan</button>
       </div>
@@ -296,6 +313,21 @@
       activeAspirationDistrict: null,
       activeScoreDistrict: null
     };
+
+    /* -------------------------------------------------------------
+       HELPER PEMBANGUNAN DINAMIS (GANJIL / GENAP)
+    ------------------------------------------------------------- */
+    function getCurrentRouteKeys() {
+      return (state.round % 2 === 1)
+? ['left', 'right', 'center']
+: ['right', 'left', 'center'];
+    }
+
+    function getCurrentRouteLabels() {
+      return (state.round % 2 === 1)
+? ['1.Barat', '2.Timur', '3.Pusat']
+: ['1.Timur', '2.Barat', '3.Pusat'];
+    }
 
     /* -------------------------------------------------------------
        DECK & INISIALISASI
@@ -390,6 +422,7 @@
       hideComboBalloon();
       hideAspirationBalloon();
       hideScoreBalloon();
+      switchMpTab('cards');
       updateActiveDistrictClass();
       renderAll();
     }
@@ -551,17 +584,18 @@
     ------------------------------------------------------------- */
     function renderRouteAndStats() {
       const rContainer = document.getElementById('route-container');
-      rContainer.innerHTML = `<span class="route-label">Rute:</span>`;
-      const stepNames = ["1.Barat", "2.Timur", "3.Pusat", "4.Timur", "5.Barat", "6.Pusat"];
+      rContainer.innerHTML = `<span class="route-label">Pembangunan:</span>`;
+      const stepNames = getCurrentRouteLabels();
+      const routeKeys = getCurrentRouteKeys();
 
-      ROUTE.forEach((stepKey, idx) => {
+      routeKeys.forEach((stepKey, idx) => {
         const node = document.createElement('div');
         node.className = `step-node ${idx === state.stepInRound? 'active': ''} ${idx < state.stepInRound? 'done': ''}`;
         node.innerText = stepNames[idx];
         rContainer.appendChild(node);
       });
 
-      document.getElementById('round-indicator').innerText = `Ronde ${state.round}/5`;
+      document.getElementById('round-indicator').innerText = `Ronde ${state.round}/6`;
     }
 
     function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx = null) {
@@ -711,7 +745,7 @@
         const slot = document.createElement('div');
         if (i < sisa) {
           slot.className = 'timer-slot-card has-card';
-          slot.innerText = `R${i + 1}`;
+          slot.innerText = `Deck ${i + 1}`;
         } else {
           slot.className = 'timer-slot-card';
           slot.innerText = '✓';
@@ -805,6 +839,150 @@
       renderHand();
       renderMasterPlan();
       updateActionBtn();
+    }
+
+    /* -------------------------------------------------------------
+       KOTAK 4: TAB MASTER PLAN & TOP 5 LEADERBOARD
+    ------------------------------------------------------------- */
+    const LEADERBOARD_API = 'http://fam.web.id:9093/mod/citydomino/leaderboard.php';
+
+    function escapeHtml(str) {
+      if (str === null || str === undefined) return '';
+      return String(str)
+.replace(/&/g, '&amp;')
+.replace(/</g, '&lt;')
+.replace(/>/g, '&gt;')
+.replace(/"/g, '&quot;')
+.replace(/'/g, '&#039;');
+    }
+
+    function switchMpTab(tab) {
+      const btnMp = document.getElementById('tab-btn-mp');
+      const btnLb = document.getElementById('tab-btn-lb');
+      const paneMp = document.getElementById('pane-mp-cards');
+      const paneLb = document.getElementById('pane-mp-lb');
+
+      if (tab === 'cards') {
+        btnMp.classList.add('active');
+        btnLb.classList.remove('active');
+        paneMp.classList.add('active');
+        paneLb.classList.remove('active');
+      } else {
+        btnLb.classList.add('active');
+        btnMp.classList.remove('active');
+        paneLb.classList.add('active');
+        paneMp.classList.remove('active');
+        loadLeaderboard();
+      }
+    }
+
+    function loadLeaderboard() {
+      const container = document.getElementById('lb-view-container');
+      if (!state.policy) return;
+
+      container.innerHTML = '<div class="lb-state-text">Memuat Top 5...</div>';
+
+      fetch(LEADERBOARD_API + '?plan=' + encodeURIComponent(state.policy.name))
+.then(function(res) {
+          return res.json();
+        })
+.then(function(res) {
+          if (res && res.status === 'success') {
+            renderLeaderboardTable(res.data);
+          } else {
+            container.innerHTML = '<div class="lb-state-text">Gagal memuat peringkat.</div>';
+          }
+        })
+.catch(function() {
+          container.innerHTML = '<div class="lb-state-text">Offline / papan peringkat belum aktif.</div>';
+        });
+    }
+
+    function renderLeaderboardTable(records) {
+      const container = document.getElementById('lb-view-container');
+      if (!records || records.length === 0) {
+        container.innerHTML = '<div class="lb-state-text">Belum ada rekor.<br>Selesaikan permainan dan jadilah Walikota pertama!</div>';
+        return;
+      }
+
+      let html = '<table class="lb-table">' +
+        '<thead>' +
+          '<tr>' +
+            '<th class="col-rank">RANK</th>' +
+            '<th class="col-name">NAMA</th>' +
+            '<th class="col-score">TOTAL</th>' +
+            '<th class="col-detail">BARAT/PUSAT/TIMUR</th>' +
+          '</tr>' +
+        '</thead>' +
+        '<tbody>';
+
+      records.forEach(function(r, idx) {
+        const rankNum = idx + 1;
+        const rankClass = rankNum <= 3? 'rank-' + rankNum: '';
+        const safeName = escapeHtml(r.name);
+        html += '<tr class="lb-row">' +
+          '<td class="lb-cell rank ' + rankClass + '">' + rankNum + '</td>' +
+          '<td class="lb-cell name" title="' + safeName + '">' + safeName + '</td>' +
+          '<td class="lb-cell total">' + r.total + '</td>' +
+          '<td class="lb-cell breakdown">' + r.left + ' / ' + r.center + ' / ' + r.right + '</td>' +
+        '</tr>';
+      });
+
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    function submitLeaderboardScore(e, total, left, center, right) {
+      e.preventDefault();
+      const inputEl = document.getElementById('lb-player-name');
+      const btnEl = document.getElementById('lb-submit-btn');
+      const statusEl = document.getElementById('lb-submit-status');
+
+      const nameVal = inputEl.value.trim();
+      if (!nameVal) return;
+
+      btnEl.disabled = true;
+      inputEl.disabled = true;
+      statusEl.style.display = 'block';
+      statusEl.className = 'lb-submit-msg';
+      statusEl.innerText = 'Menyimpan skor...';
+
+      const payload = 'action=submit' +
+        '&name=' + encodeURIComponent(nameVal) +
+        '&plan=' + encodeURIComponent(state.policy.name) +
+        '&total=' + encodeURIComponent(total) +
+        '&left=' + encodeURIComponent(left) +
+        '&center=' + encodeURIComponent(center) +
+        '&right=' + encodeURIComponent(right);
+
+      fetch(LEADERBOARD_API, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: payload
+      })
+.then(function(res) {
+          return res.json();
+        })
+.then(function(res) {
+          if (res && res.status === 'success') {
+            statusEl.className = 'lb-submit-msg success';
+            statusEl.innerText = '✓ Berhasil dicatat ke Top 5!';
+            switchMpTab('lb');
+          } else {
+            statusEl.className = 'lb-submit-msg error';
+            statusEl.innerText = 'Gagal menyimpan: ' + (res.message || 'Error server');
+            btnEl.disabled = false;
+            inputEl.disabled = false;
+          }
+        })
+.catch(function() {
+          statusEl.className = 'lb-submit-msg error';
+          statusEl.innerText = 'Gagal terhubung ke server leaderboard.';
+          btnEl.disabled = false;
+          inputEl.disabled = false;
+        });
     }
 
     /* -------------------------------------------------------------
@@ -1015,7 +1193,8 @@
        INTERAKSI & ALUR PERMAINAN UTAMA
     ------------------------------------------------------------- */
     function updateActiveDistrictClass() {
-      const activeDistrict = ROUTE[state.stepInRound];
+      const currentRoute = getCurrentRouteKeys();
+      const activeDistrict = currentRoute[state.stepInRound];
       ['left', 'center', 'right'].forEach(k => {
         const el = document.getElementById(`pool-${k}`);
         if (k === activeDistrict &&!state.isDiscardPhase) {
@@ -1028,7 +1207,8 @@
 
     function onPoolTileClick(poolKey, idx) {
       if (state.isDiscardPhase) return;
-      const activeDistrict = ROUTE[state.stepInRound];
+      const currentRoute = getCurrentRouteKeys();
+      const activeDistrict = currentRoute[state.stepInRound];
       if (poolKey!== activeDistrict) return;
 
       if (state.selectedPoolTile && state.selectedPoolTile.poolKey === poolKey && state.selectedPoolTile.index === idx) {
@@ -1095,7 +1275,7 @@
         state.selectedHandTile = null;
         state.isDiscardPhase = false;
 
-        if (state.round < 5) {
+        if (state.round < 6) {
           state.round++;
           state.stepInRound = 0;
           updateActiveDistrictClass();
@@ -1129,8 +1309,17 @@
       state.totalActionsDone++;
       state.stepInRound++;
 
-      if (state.stepInRound >= 6) {
-        state.isDiscardPhase = true;
+      // 3 aksi tercapai per ronde
+      if (state.stepInRound >= 3) {
+        if (state.round >= 6) {
+          // Ronde 6 selesai, langsung evaluasi akhir tanpa jeda deck
+          renderAll();
+          endGame();
+          return;
+        } else {
+          // Ronde 1-5: masuk fase buang & ambil kartu deck
+          state.isDiscardPhase = true;
+        }
       }
 
       updateActiveDistrictClass();
@@ -1198,7 +1387,7 @@
     }
 
     /* -------------------------------------------------------------
-       MODAL AKHIR & BANTUAN
+       MODAL AKHIR & TUTORIAL
     ------------------------------------------------------------- */
     function endGame() {
       hideComboBalloon();
@@ -1238,6 +1427,7 @@
       const modalDesc = document.getElementById('final-modal-desc');
       const statusLabel = document.getElementById('city-status-label');
       const cityTitleEl = document.getElementById('city-title');
+      const lbSection = document.getElementById('lb-submit-container');
 
       const failedDistricts = [];
       if (leftHappy < 50) failedDistricts.push('Distrik Barat');
@@ -1253,6 +1443,12 @@
         statusLabel.innerText = "Status Evaluasi:";
         cityTitleEl.innerText = "Distrik Kolaps / Kerusuhan";
         cityTitleEl.style.color = "#f87171";
+
+        lbSection.innerHTML = `
+          <div class="lb-collapse-alert">
+            ⚠️ <b>KOTA GAGAL:</b> Skor tidak dapat dicatat ke papan peringkat karena ada distrik dengan kebahagiaan &lt; 50%.
+          </div>
+        `;
       } else {
         modalTitle.innerText = "EVALUASI AKHIR KOTA";
         modalTitle.style.color = "var(--accent)";
@@ -1269,6 +1465,17 @@
 
         cityTitleEl.innerText = title;
         cityTitleEl.style.color = "#facc15";
+
+        lbSection.innerHTML = `
+          <div class="lb-submit-section">
+            <div class="lb-submit-title">🏆 Catat Rekor ke Papan Peringkat</div>
+            <form class="lb-submit-form" onsubmit="submitLeaderboardScore(event, ${totalScore}, ${leftScore}, ${centerScore}, ${rightScore})">
+              <input type="text" id="lb-player-name" class="lb-name-input" placeholder="Nama walikota (maks 15 huruf)..." maxlength="15" required autocomplete="off">
+              <button type="submit" id="lb-submit-btn" class="lb-btn-send">Kirim</button>
+            </form>
+            <div id="lb-submit-status" class="lb-submit-msg" style="display:none;"></div>
+          </div>
+        `;
       }
 
       document.getElementById('end-modal').style.display = 'flex';

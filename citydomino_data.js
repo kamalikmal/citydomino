@@ -18,15 +18,6 @@
     }
 
     const MASTER_COMBOS = {
-      five_kind: {
-        id: 'five_kind',
-        name: 'Five of a Kind',
-        pts: 45,
-        desc: '5 domino di baris memiliki angka sama persis (warna bebas). Contoh: 5-5-5-5-5.',
-        pattern: [
-          { val: '5', col: 'blue' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '5', col: 'red' }, { val: '5', col: 'blue' }
-        ]
-      },
       straight_flush: {
         id: 'straight_flush',
         name: 'Straight Flush',
@@ -34,6 +25,15 @@
         desc: '5 angka berurutan TANPA putus DAN kelimanya memiliki 1 warna sama persis.',
         pattern: [
           { val: '1', col: 'blue' }, { val: '2', col: 'blue' }, { val: '3', col: 'blue' }, { val: '4', col: 'blue' }, { val: '5', col: 'blue' }
+        ]
+      },
+	  five_kind: {
+        id: 'five_kind',
+        name: 'Five of a Kind',
+        pts: 45,
+        desc: '5 domino di baris memiliki angka sama persis (warna bebas). Contoh: 5-5-5-5-5.',
+        pattern: [
+          { val: '5', col: 'blue' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '5', col: 'red' }, { val: '5', col: 'blue' }
         ]
       },
       four_kind: {
@@ -54,6 +54,15 @@
           { val: '3', col: 'green' }, { val: '3', col: 'blue' }, { val: '3', col: 'red' }, { val: '6', col: 'amber' }, { val: '6', col: 'green' }
         ]
       },
+	  straight: {
+        id: 'straight',
+        name: 'Straight',
+        pts: 30,
+        desc: '5 angka berurutan tanpa putus (misal: 2-3-4-5-6). Warna kartu boleh campur.',
+        pattern: [
+          { val: '2', col: 'blue' }, { val: '3', col: 'amber' }, { val: '4', col: 'green' }, { val: '5', col: 'red' }, { val: '6', col: 'blue' }
+        ]
+      },
       flush: {
         id: 'flush',
         name: 'Flush',
@@ -63,13 +72,13 @@
           { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }
         ]
       },
-      straight: {
-        id: 'straight',
-        name: 'Straight',
-        pts: 30,
-        desc: '5 angka berurutan tanpa putus (misal: 2-3-4-5-6). Warna kartu boleh campur.',
+	  two_pair: {
+        id: 'two_pair',
+        name: 'Two Pair',
+        pts: 20,
+        desc: 'Ada 2 pasang angka kembar yang berbeda (misal sepasang 1 dan sepasang 5).',
         pattern: [
-          { val: '2', col: 'blue' }, { val: '3', col: 'amber' }, { val: '4', col: 'green' }, { val: '5', col: 'red' }, { val: '6', col: 'blue' }
+          { val: '1', col: 'blue' }, { val: '1', col: 'red' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '•', col: 'blue' }
         ]
       },
       color_boat: {
@@ -90,15 +99,6 @@
           { val: '2', col: 'red' }, { val: '2', col: 'blue' }, { val: '2', col: 'green' }, { val: '•', col: 'amber' }, { val: '•', col: 'blue' }
         ]
       },
-      two_pair: {
-        id: 'two_pair',
-        name: 'Two Pair',
-        pts: 20,
-        desc: 'Ada 2 pasang angka kembar yang berbeda (misal sepasang 1 dan sepasang 5).',
-        pattern: [
-          { val: '1', col: 'blue' }, { val: '1', col: 'red' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '•', col: 'blue' }
-        ]
-      },
       one_pair: {
         id: 'one_pair',
         name: 'One Pair',
@@ -111,16 +111,64 @@
     };
 
     const POLICIES = [
-      { name: "Metropolis Klasik", fav: { left: 1, center: 5, right: 4 }, active: ['five_kind', 'four_kind', 'full_house', 'straight', 'three_kind', 'one_pair'] },
-      { name: "Taman Ekologis", fav: { left: 0, center: 6, right: 3 }, active: ['straight_flush', 'flush', 'color_boat', 'full_house', 'two_pair', 'one_pair'] },
-      { name: "Kawasan Terpadu", fav: { left: 2, center: 5, right: 3 }, active: ['five_kind', 'straight_flush', 'four_kind', 'flush', 'straight', 'two_pair'] },
-      { name: "Zona Harmoni", fav: { left: 0, center: 1, right: 4 }, active: ['straight_flush', 'full_house', 'flush', 'straight', 'color_boat', 'three_kind'] },
-      { name: "Distrik Simetris", fav: { left: 4, center: 2, right: 4 }, active: ['four_kind', 'full_house', 'straight', 'color_boat', 'two_pair', 'one_pair'] },
-      { name: "Master Urban 2026", fav: { left: 6, center: 5, right: 2 }, active: ['five_kind', 'straight_flush', 'flush', 'color_boat', 'three_kind', 'one_pair'] },
-      { name: "Pusat Riset", fav: { left: 3, center: 6, right: 5 }, active: ['five_kind', 'four_kind', 'straight_flush', 'straight', 'two_pair', 'one_pair'] },
-      { name: "Koridor Hijau", fav: { left: 0, center: 1, right: 0 }, active: ['straight_flush', 'flush', 'color_boat', 'straight', 'three_kind', 'two_pair'] },
-      { name: "Smart Transit", fav: { left: 2, center: 4, right: 3 }, active: ['full_house', 'straight', 'flush', 'color_boat', 'two_pair', 'one_pair'] },
-      { name: "Blok Modular", fav: { left: 4, center: 3, right: 1 }, active: ['four_kind', 'full_house', 'color_boat', 'three_kind', 'two_pair', 'one_pair'] },
-      { name: "Megapolitan", fav: { left: 5, center: 6, right: 5 }, active: ['five_kind', 'straight_flush', 'four_kind', 'full_house', 'flush', 'straight'] },
-      { name: "Desain Kompak", fav: { left: 1, center: 2, right: 3 }, active: ['straight', 'flush', 'color_boat', 'three_kind', 'two_pair', 'one_pair'] }
-    ];
+  { 
+    name: "Metropolis Klasik", 
+    fav: { left: 1, center: 5, right: 4 }, 
+    active: ['five_kind', 'four_kind', 'full_house', 'two_pair', 'three_kind', 'one_pair'] 
+  },
+  { 
+    name: "Taman Ekologis", 
+    fav: { left: 0, center: 6, right: 3 }, 
+    active: ['straight_flush', 'full_house', 'straight', 'flush', 'two_pair', 'color_boat'] 
+  },
+  { 
+    name: "Kawasan Terpadu", 
+    fav: { left: 2, center: 5, right: 3 }, 
+    active: ['five_kind', 'four_kind', 'straight', 'flush', 'two_pair', 'three_kind'] 
+  },
+  { 
+    name: "Zona Harmoni", 
+    fav: { left: 0, center: 1, right: 4 }, 
+    active: ['straight_flush', 'four_kind', 'straight', 'flush', 'color_boat', 'three_kind'] 
+  },
+  { 
+    name: "Distrik Simetris", 
+    fav: { left: 4, center: 2, right: 4 }, 
+    active: ['four_kind', 'full_house', 'straight', 'two_pair', 'color_boat', 'one_pair'] 
+  },
+  { 
+    name: "Master Urban 2026", 
+    fav: { left: 6, center: 5, right: 2 }, 
+    active: ['five_kind', 'straight_flush', 'full_house', 'flush', 'color_boat', 'one_pair'] 
+  },
+  { 
+    name: "Pusat Riset", 
+    fav: { left: 3, center: 6, right: 5 }, 
+    active: ['five_kind', 'straight_flush', 'four_kind', 'flush', 'three_kind', 'one_pair'] 
+  },
+  { 
+    name: "Koridor Hijau", 
+    fav: { left: 0, center: 1, right: 0 }, 
+    active: ['straight_flush', 'full_house', 'straight', 'flush', 'color_boat', 'three_kind'] 
+  },
+  { 
+    name: "Smart Transit", 
+    fav: { left: 2, center: 4, right: 3 }, 
+    active: ['five_kind', 'full_house', 'straight', 'flush', 'two_pair', 'one_pair'] 
+  },
+  { 
+    name: "Blok Modular", 
+    fav: { left: 4, center: 3, right: 1 }, 
+    active: ['straight_flush', 'four_kind', 'full_house', 'two_pair', 'color_boat', 'three_kind'] 
+  },
+  { 
+    name: "Megapolitan", 
+    fav: { left: 5, center: 6, right: 5 }, 
+    active: ['five_kind', 'straight_flush', 'straight', 'flush', 'two_pair', 'three_kind'] 
+  },
+  { 
+    name: "Kampung Kompak", 
+    fav: { left: 1, center: 2, right: 3 }, 
+    active: ['four_kind', 'full_house', 'straight', 'color_boat', 'three_kind', 'one_pair'] 
+  }
+];
