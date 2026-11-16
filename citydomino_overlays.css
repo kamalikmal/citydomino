@@ -1,0 +1,427 @@
+/* =============================================================
+   1. BALON POPOVER (ASPIRASI, SKOR DISTRIK, & MASTER PLAN)
+   ============================================================= */
+.district-aspiration-balloon,
+.district-score-balloon,
+.combo-balloon {
+  position: fixed;
+  z-index: 1250;
+  background: #0f172a;
+  border: 1px solid var(--accent);
+  border-radius: 6px;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.75), 0 0 10px var(--accent-glow);
+}
+
+.district-aspiration-balloon::after,
+.district-score-balloon::after,
+.combo-balloon::after {
+  content: '';
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #0f172a;
+  transform: rotate(45deg);
+}
+
+/* Balon Aspirasi Kebahagiaan */
+.district-aspiration-balloon {
+  width: 235px;
+  padding: 8px 12px;
+}
+.district-aspiration-balloon::after {
+  top: -6px;
+  right: 24px;
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
+}
+.district-aspiration-balloon.arrow-bottom::after {
+  top: auto;
+  bottom: -6px;
+  border-left: none;
+  border-top: none;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+
+.aspirasi-header,.score-balloon-header {
+  font-size: 0.7rem;
+  font-weight: 900;
+  color: var(--accent);
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.aspirasi-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.aspirasi-satisfied {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #34d399;
+  padding: 4px 0;
+  text-align: center;
+}
+.aspirasi-req-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: 100%;
+}
+.aspirasi-req-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.67rem;
+  padding: 3px 6px;
+  border-radius: 4px;
+}
+.aspirasi-req-row.req-ok {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+}
+.aspirasi-req-row.req-need {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+}
+.aspirasi-req-val {
+  font-weight: 800;
+  white-space: nowrap;
+}
+.aspirasi-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: #f1f5f9;
+}
+.aspirasi-item.building-icon {
+  width: 15px;
+  height: 15px;
+}
+
+/* Balon Rincian Skor Distrik */
+.district-score-balloon {
+  width: 220px;
+  padding: 8px 12px;
+}
+.district-score-balloon::after {
+  top: -6px;
+  right: 18px;
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
+}
+.district-score-balloon.arrow-bottom::after {
+  top: auto;
+  bottom: -6px;
+  border-left: none;
+  border-top: none;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+.score-balloon-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+/* Balon Popover Master Plan Poker */
+.combo-balloon {
+  width: 250px;
+  padding: 8px 10px;
+}
+.combo-balloon::after {
+  bottom: -6px;
+  left: 24px;
+  border-right: 1px solid var(--accent);
+  border-bottom: 1px solid var(--accent);
+}
+.combo-balloon.arrow-top::after {
+  bottom: auto;
+  top: -6px;
+  border-right: none;
+  border-bottom: none;
+  border-left: 1px solid var(--accent);
+  border-top: 1px solid var(--accent);
+}
+.balloon-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 3px;
+}
+.balloon-title {
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+.balloon-pts {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--highlight);
+}
+.balloon-desc {
+  font-size: 0.66rem;
+  color: #cbd5e1;
+  line-height: 1.35;
+}
+
+/* =============================================================
+   2. MODAL & DIALOG
+   ============================================================= */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(3, 7, 18, 0.85);
+  backdrop-filter: blur(4px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.modal-card {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 10px;
+  padding: 18px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.modal-title {
+  font-size: 1.05rem;
+  font-weight: 900;
+  color: var(--accent);
+  text-transform: uppercase;
+  border-bottom: 1px solid #1e293b;
+  padding-bottom: 6px;
+}
+
+.modal-btn-close {
+  background: #1e293b;
+  border: 1px solid #334155;
+  color: #cbd5e1;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+  align-self: flex-end;
+  transition: all 0.15s;
+}
+.modal-btn-close:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+/* Modal Evaluasi Akhir Game */
+.end-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  background: #090d16;
+  border: 1px solid #1e293b;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.end-summary-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+.end-col-title {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+.end-col-pts {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--highlight);
+}
+.end-col-happy {
+  font-size: 0.68rem;
+  font-weight: 800;
+}
+
+.city-title-box {
+  background: #1e293b;
+  border-radius: 6px;
+  padding: 10px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#city-status-label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+#city-title {
+  font-size: 0.95rem;
+  font-weight: 900;
+}
+
+.btn-restart-game {
+  background: #16a34a;
+  border: none;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 5px;
+  font-size: 0.82rem;
+  font-weight: 900;
+  cursor: pointer;
+  text-transform: uppercase;
+  transition: background 0.15s;
+}
+.btn-restart-game:hover {
+  background: #15803d;
+}
+
+/* Form Submit Leaderboard di Modal Akhir */
+.lb-submit-section {
+  background: #090d16;
+  border: 1px solid #1e293b;
+  border-radius: 6px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lb-submit-title {
+  font-size: 0.72rem;
+  font-weight: 900;
+  color: var(--highlight);
+  text-transform: uppercase;
+}
+.lb-submit-form {
+  display: flex;
+  gap: 6px;
+}
+.lb-name-input {
+  flex: 1;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 6px 10px;
+  font-size: 0.78rem;
+  color: #ffffff;
+  outline: none;
+  font-weight: 700;
+}
+.lb-name-input:focus {
+  border-color: var(--accent);
+}
+.lb-btn-send {
+  background: #0284c7;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 900;
+  color: #ffffff;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+.lb-btn-send:hover:not(:disabled) {
+  background: #0369a1;
+}
+.lb-btn-send:disabled {
+  background: #1e293b;
+  color: #64748b;
+  cursor: not-allowed;
+}
+
+.lb-collapse-alert {
+  background: #450a0a;
+  border: 1px solid #dc2626;
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  color: #fca5a5;
+  line-height: 1.35;
+  text-align: center;
+}
+.lb-submit-msg {
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 0;
+}
+.lb-submit-msg.success { color: #34d399; }
+.lb-submit-msg.error { color: #f87171; }
+
+/* Modal Picker Wild */
+#wild-modal {
+  z-index: 2000;
+}
+.wild-picker-box {
+  background: var(--card-bg);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 14px 16px;
+  text-align: center;
+  max-width: 400px;
+  width: 100%;
+}
+.wild-picker-title {
+  font-size: 0.85rem;
+  font-weight: 900;
+  color: var(--highlight);
+  letter-spacing: 0.5px;
+}
+.wild-picker-options {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  flex-wrap: nowrap;
+  margin: 12px 0;
+}
+.btn-wild-opt {
+  flex: 1;
+  height: 48px;
+  font-size: 0.85rem;
+  font-weight: 900;
+  border-radius: 4px;
+  border: 1px solid #334155;
+  background: #090d16;
+  color: var(--text-main);
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 3px 2px;
+}
+.btn-wild-opt:hover {
+  border-color: var(--accent);
+  background: var(--active-surface);
+  color: var(--accent);
+}
+.btn-wild-opt:hover.building-icon {
+  fill: var(--accent);
+}

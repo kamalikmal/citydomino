@@ -3,16 +3,110 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Domino City</title>
-  <link href="citydomino.css?v=2" type="text/css" rel="stylesheet" media="all">
+  <title>City Domino</title>
+  <!-- Tag Link CSS pada <head> -->
+  <link rel="stylesheet" href="citydomino_core.css?v=2">
+  <link rel="stylesheet" href="citydomino_overlays.css?v=2">
+  <link rel="stylesheet" href="citydomino_help.css?v=1">
+  <link rel="stylesheet" href="citydomino_tutorial.css?v=20">
 </head>
 <body>
+  <!-- LAYER 1: Peringatan Rotasi Layar HP (Hanya muncul jika posisi potret) -->
+  <div id="orientation-warning">
+    <div class="rotate-phone-icon">🔄📱</div>
+    <p class="rotate-text">Putar ponsel ke posisi lanskap untuk bermain</p>
+  </div>
+
+  <!-- LAYER 2: Homescreen Penuh -->
+  <div id="homescreen-screen">
+    <div class="homescreen-bg"></div>
+    <div class="homescreen-bottom-vignette"></div>
+
+    <div class="homescreen-ui">
+      <!-- Judul Game -->
+      <header class="homescreen-header">
+        <h1 class="game-logo-title">CITY DOMINO</h1>
+        <p class="game-logo-tagline">Urban Poker Planner</p>
+      </header>
+
+      <!-- Tombol Bagian Bawah -->
+      <footer class="homescreen-actions">
+        <button id="btn-start-game" class="btn-homescreen btn-main-play">
+          MULAI MAIN
+        </button>
+        <button id="btn-open-tutorial" class="btn-homescreen btn-sub-tutorial">
+          TUTORIAL
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- OVERLAY TUTORIAL INTERAKTIF -->
+  <div id="tutorial-overlay" class="tutorial-overlay hidden" aria-hidden="true">
+    <!-- Backdrop gelap dengan lubang spotlight SVG -->
+    <svg id="tutorial-spotlight-svg" class="tutorial-spotlight-svg">
+      <defs>
+        <mask id="tutorial-mask">
+          <rect x="0" y="0" width="100%" height="100%" fill="white" />
+          <rect id="tutorial-spotlight-cutout" x="0" y="0" width="0" height="0" rx="8" ry="8" fill="black" />
+        </mask>
+      </defs>
+      <rect x="0" y="0" width="100%" height="100%" fill="rgba(6, 12, 24, 0.82)" mask="url(#tutorial-mask)" />
+    </svg>
+
+    <!-- Kotak Balon Dialog Petunjuk -->
+    <div id="tutorial-dialog" class="tutorial-dialog">
+      <div class="tutorial-dialog-header">
+        <span id="tutorial-step-badge" class="tutorial-step-badge">Langkah 1/15</span>
+        <button id="btn-skip-tutorial" class="btn-skip-tutorial" type="button" title="Lewati Tutorial">Lewati ✕</button>
+      </div>
+      <p id="tutorial-dialog-text" class="tutorial-dialog-text">Memuat panduan...</p>
+      <div id="tutorial-dialog-actions" class="tutorial-dialog-actions">
+        <button id="btn-tutorial-next" class="btn-tutorial-action hidden" type="button">Lanjut</button>
+      </div>
+    </div>
+
+    <!-- Modal Evaluasi Selesai Tutorial -->
+    <div id="tutorial-finish-modal" class="tutorial-finish-modal hidden">
+      <div class="tutorial-finish-card">
+        <div class="tutorial-finish-badge">LATIHAN SELESAI</div>
+        <h2 class="tutorial-finish-title">Ronde Dummy Tuntas!</h2>
+        <div class="tutorial-finish-summary">
+          <div class="summary-row">
+            <span>Westfall (Ekologi):</span>
+            <strong class="text-green">Three of a Kind + Warga Senang</strong>
+          </div>
+          <div class="summary-row">
+            <span>Eastgate (Bisnis):</span>
+            <strong class="text-green">Two Pair + Warga Senang</strong>
+          </div>
+          <div class="summary-row">
+            <span>Midvale (Hunian):</span>
+            <strong class="text-green">Full Set + Warga Senang</strong>
+          </div>
+          <div class="summary-row">
+            <span>Fitur Tukar Deck:</span>
+            <strong class="text-blue">Berhasil Diuji</strong>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-row total-row">
+            <span>Simulasi Skor:</span>
+            <span class="tutorial-score-val">480 Poin</span>
+          </div>
+        </div>
+        <p class="tutorial-finish-desc">
+          Kamu telah menguasai cara membaca aspirasi warga, menyusun kombinasi poker, hingga menukar kartu di akhir ronde.
+        </p>
+        <button id="btn-tutorial-start-real" class="btn-tutorial-start-real" type="button">Mulai Main Sesungguhnya</button>
+      </div>
+    </div>
+  </div>
 
   <!-- 1. Header Terpadu: Judul (Kiri), Pembangunan Dinamis (Tengah), Status Ronde (Kanan) -->
   <header class="main-header">
     <div class="header-left">
-      <h1 class="game-title">Domino City</h1>
-      <button class="btn-help-mini" onclick="openHelpModal()">❓ Tutorial</button>
+      <h1 class="game-title">City Domino</h1>
+      <button class="btn-help-mini" onclick="openHelpModal()">❓ Bantuan</button>
     </div>
     <div class="route-center" id="route-container"></div>
     <div class="stats-right">
@@ -22,46 +116,46 @@
 
   <!-- 2. Grid Permainan 3x2 -->
   <main class="main-game-grid">
-    <!-- KOTAK 1: Distrik Barat -->
+    <!-- KOTAK 1: Westfall -->
     <div class="box-panel pool" id="pool-left">
       <div class="pool-header">
         <span class="pool-name">
-          Distrik Barat
+          Westfall
           <span class="pool-badge-active">AKTIF</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-left" onclick="toggleDistrictAspiration(event, 'left')">😊 100%</span>
-          <span class="pool-score" id="score-left" onclick="toggleDistrictScoreBalloon(event, 'left')" title="Klik untuk rincian skor">0 pt</span>
+          <span class="pool-score" id="score-left" onclick="toggleDistrictScoreBalloon(event, 'left')" title="Klik untuk rincian skor">0 poin</span>
         </div>
       </div>
       <div id="grid-left" class="pool-grid-wrapper"></div>
     </div>
 
-    <!-- KOTAK 2: Pusat Kota -->
+    <!-- KOTAK 2: Midvale -->
     <div class="box-panel pool" id="pool-center">
       <div class="pool-header">
         <span class="pool-name">
-          Pusat Kota
+          Midvale
           <span class="pool-badge-active">AKTIF</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-center" onclick="toggleDistrictAspiration(event, 'center')">😊 100%</span>
-          <span class="pool-score" id="score-center" onclick="toggleDistrictScoreBalloon(event, 'center')" title="Klik untuk rincian skor">0 pt</span>
+          <span class="pool-score" id="score-center" onclick="toggleDistrictScoreBalloon(event, 'center')" title="Klik untuk rincian skor">0 poin</span>
         </div>
       </div>
       <div id="grid-center" class="pool-grid-wrapper"></div>
     </div>
 
-    <!-- KOTAK 3: Distrik Timur -->
+    <!-- KOTAK 3: Eastgate -->
     <div class="box-panel pool" id="pool-right">
       <div class="pool-header">
         <span class="pool-name">
-          Distrik Timur
+          Eastgate
           <span class="pool-badge-active">AKTIF</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-right" onclick="toggleDistrictAspiration(event, 'right')">😊 100%</span>
-          <span class="pool-score" id="score-right" onclick="toggleDistrictScoreBalloon(event, 'right')" title="Klik untuk rincian skor">0 pt</span>
+          <span class="pool-score" id="score-right" onclick="toggleDistrictScoreBalloon(event, 'right')" title="Klik untuk rincian skor">0 poin</span>
         </div>
       </div>
       <div id="grid-right" class="pool-grid-wrapper"></div>
@@ -87,13 +181,13 @@
     </div>
 
     <!-- KOTAK 5: Tangan Pemain & Komando Aksi -->
-    <div class="box-panel box-bottom hand-panel-box">
+    <div class="box-panel box-bottom hand-panel-box" id="hand-panel">
       <div class="hand-header-bar">
-        <span>Tangan Pemain</span>
+        <span>Kontraktor</span>
         <span class="hand-hint">💡 Double Klik atau 🔄 untuk putar</span>
       </div>
       <div class="timer-alert" id="timer-alert-box">
-        ⚠️ <b>Akhir Ronde:</b> Pilih 1 kartu tangan untuk ditukar dengan Deck.
+        ⚠️ <b>Akhir Ronde:</b> Pilih 1 kartu Kontraktor untuk ditukar dengan Deck.
       </div>
       <div class="hand-cards-row" id="hand-cards-container"></div>
       <div class="actions-bar">
@@ -101,11 +195,11 @@
         <button class="btn-main" id="btn-action" disabled onclick="executeAction()">Tukar Kartu</button>
       </div>
     </div>
-	
+
     <!-- KOTAK 6: Arsip Khusus & Deck Ronde -->
     <div class="box-panel box-bottom special-timer-panel">
       <div class="panel-header-simple">
-        <span>KARTU KHUSUS & DECK</span>
+        <span>Bursa Rekanan & Regulasi</span>
       </div>
       <div class="special-section">
         <div id="special-card-render"></div>
@@ -116,7 +210,7 @@
       </div>
       <div class="timer-section">
         <div class="timer-header-row">
-          <span>DECK</span>
+          <span>Bursa Rekanan</span>
           <span id="timer-slots-label">5/5 Tersedia</span>
         </div>
         <div class="timer-cards-track" id="timer-slots-container"></div>
@@ -164,29 +258,29 @@
       </div>
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-          <span>Distrik Barat:</span>
+          <span>Westfall:</span>
           <div>
             <span id="final-left-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-left-pts" style="color:var(--highlight);">0 pt</b>
+            <b id="final-left-pts" style="color:var(--highlight);">0 poin</b>
           </div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-          <span>Pusat Kota:</span>
+          <span>Midvale:</span>
           <div>
             <span id="final-center-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-center-pts" style="color:var(--highlight);">0 pt</b>
+            <b id="final-center-pts" style="color:var(--highlight);">0 poin</b>
           </div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
-          <span>Distrik Timur:</span>
+          <span>Eastgate:</span>
           <div>
             <span id="final-right-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-right-pts" style="color:var(--highlight);">0 pt</b>
+            <b id="final-right-pts" style="color:var(--highlight);">0 poin</b>
           </div>
         </div>
         <div style="border-top:1px solid #1e293b; margin-top:4px; padding-top:6px; display:flex; justify-content:space-between; font-size:0.9rem;">
           <b>SKOR AKHIR:</b>
-          <b id="final-total-pts" style="color:#38bdf8;">0 pt</b>
+          <b id="final-total-pts" style="color:#38bdf8;">0 poin</b>
         </div>
       </div>
       <div id="city-title-box" style="text-align:center; padding:8px; background:#1e293b; border-radius:6px;">
@@ -238,15 +332,15 @@
               <div class="tut-wf-header">HEADER: RUTE AKTIF (Urutan distrik yang dibangun pada ronde berjalan)</div>
               <div class="tut-wf-grid">
                 <div class="tut-wf-cell cell-district">
-                  <span class="tut-wf-title">Distrik Barat</span>
+                  <span class="tut-wf-title">Westfall</span>
                   <span class="tut-wf-sub">15 Domino (3 baris)</span>
                 </div>
                 <div class="tut-wf-cell cell-district">
-                  <span class="tut-wf-title">Pusat Kota</span>
+                  <span class="tut-wf-title">Midvale</span>
                   <span class="tut-wf-sub">15 Domino (3 baris)</span>
                 </div>
                 <div class="tut-wf-cell cell-district">
-                  <span class="tut-wf-title">Distrik Timur</span>
+                  <span class="tut-wf-title">Eastgate</span>
                   <span class="tut-wf-sub">15 Domino (3 baris)</span>
                 </div>
                 <div class="tut-wf-cell">
@@ -276,7 +370,7 @@
               <span>Simulasi Distrik:</span>
               <span class="district-happy-badge happy-danger" id="tut-happy-badge">⚠️ 25% (Butuh 1)</span>
             </div>
-            <span id="tut-district-status" style="color:var(--highlight); font-weight:800;">Target: Five of a Kind (+30 pt)</span>
+            <span id="tut-district-status" style="color:var(--highlight); font-weight:800;">Target: Five of a Kind (+30 poin)</span>
           </div>
           <div class="tut-district-row" id="tut-district-row"></div>
         </div>
@@ -307,1636 +401,89 @@
           <li><b>Tujuan:</b> Susun poker angka/warna bernilai tertinggi di 3 distrik kota sambil menjaga tingkat kepuasan warga (Happiness) minimal 50%.</li>
           <li><b>Skala Bangunan:</b> Tiap angka domino merepresentasikan zonasi tata kota: 0 = Taman Kota/Pohon, 1 = Rumah Tapak, 2 = Ruko Komersial, 3 = Fasilitas Publik, 4 = Apartemen Blok, 5 = Menara Pencakar Langit, 6 = Mega Landmark Kota.</li>
           <li><b>Keseimbangan Distrik (Happiness):</b> Dihitung langsung per distrik (total 30 petak zonasi). Tiap distrik menuntut 4 kebutuhan (masing-masing bernilai +25%):
-            <br>• <b>Pilar RTH (0, 1, 6):</b> Min. 10 petak (+25%)
-            <br>• <b>Pilar Hunian/Layanan (0, 3, 4):</b> Min. 10 petak (+25%)
-            <br>• <b>Pilar Pusat Bisnis (2, 5, 6):</b> Min. 10 petak (+25%)
-            <br>• <b>Bangunan Favorit Distrik:</b> Min. 6 petak sesuai ketetapan Master Plan (+25%)
+            <br>• <b>Pilar Ekologi (0, 1, 6):</b> Min. 10 petak (+25%)
+            <br>• <b>Pilar Hunian (0, 3, 4):</b> Min. 10 petak (+25%)
+            <br>• <b>Pilar Bisnis (2, 5, 6):</b> Min. 10 petak (+25%)
+            <br>• <b>Bangunan Trademark:</b> Min. 6 petak sesuai ketetapan Master Plan (+25%)
             <br>• <i>Catatan: Skor akhir tiap distrik dihitung dari Skor Poker Murni × % Happiness (klik angka skor di header distrik untuk melihat rincian kalkulasinya).</i>
           </li>
           <li><b>Aspirasi Warga:</b> Klik badge Happiness di header tiap distrik untuk melihat apa saja angka yang masih dibutuhkan warga di distrik tersebut. Jika kebutuhan terpenuhi sempurna, warga merasa senang!</li>
           <li><b>Syarat Kalah (Fail-State):</b> Jika saat permainan berakhir terdapat <b>minimal 1 distrik</b> dengan Happiness di bawah <b>50%</b>, permainan langsung dihitung <b>KALAH (Kerusuhan Kota)</b>.</li>
-          <li><b>Pembangunan:</b> Game berlangsung selama <b>6 ronde</b> dengan <b>3 aksi</b> per ronde:
-            <br>• <b>Ronde Ganjil (1, 3, 5):</b> Barat → Timur → Pusat.
-            <br>• <b>Ronde Genap (2, 4, 6):</b> Timur → Barat → Pusat.
+          <li><b>Rute pembangunan:</b> Game berlangsung selama <b>6 ronde</b> dengan <b>3 aksi</b> per ronde:
+            <br>• <b>Ronde Ganjil (1, 3, 5):</b> Westfall → Eastgate → Midvale.
+            <br>• <b>Ronde Genap (2, 4, 6):</b> Eastgate → Westfall → Midvale.
           </li>
           <li><b>Tukar Kartu:</b> Pilih 1 kartu di distrik yang sedang aktif dan 1 kartu di tangan, lalu klik <i>Tukar Kartu</i>.</li>
           <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
           <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
-          <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 pt</b> pada baris yang membentuk kombinasi sah.</li>
+          <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 poin</b> pada baris yang membentuk kombinasi sah.</li>
           <li><b>Deck:</b> Di akhir ronde 1 sampai 5 (tepat 5 kali jeda), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Di akhir ronde 6, evaluasi akhir langsung dilakukan.</li>
         </ul>
         <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()">Kembali ke Permainan</button>
       </div>
     </div>
   </div>
+  <!-- Tag Script JS sebelum </body> -->
+  <script type="text/javascript" src="citydomino_data.js?v=3"></script>
+  <script type="text/javascript" src="citydomino_engine.js?v=3"></script>
+  <script type="text/javascript" src="citydomino_leaderboard.js?v=3"></script>
+  <script type="text/javascript" src="citydomino_main.js?v=4"></script>
+  <script type="text/javascript" src="citydomino_help.js?v=1"></script>
+  <script type="text/javascript" src="citydomino_tutorial.js?v=29"></script>
+  <script type="text/javascript">
+    // Fungsi Masuk Layar Penuh & Kunci Orientasi Lanskap
+    function triggerFullscreenLandscape() {
+      const doc = document.documentElement;
 
-  <script type="text/javascript" src="citydomino_data.js?v=1"></script>
-  <script>
-    /* -------------------------------------------------------------
-       STATE PERMAINAN UTAMA
-    ------------------------------------------------------------- */
-    const state = {
-      specialCard: null,
-      pools: {
-        left: [],
-        center: [],
-        right: []
-      },
-      hand: [],
-      timerDeck: [],
-      policy: null,
-      round: 1,
-      stepInRound: 0,
-      totalActionsDone: 0,
-      selectedPoolTile: null,
-      selectedHandTile: null,
-      isDiscardPhase: false,
-      history: null,
-      activeWildPicker: null,
-      activeBalloonComboId: null,
-      activeAspirationDistrict: null,
-      activeScoreDistrict: null
-    };
-
-    /* -------------------------------------------------------------
-       HELPER PEMBANGUNAN DINAMIS (GANJIL / GENAP)
-    ------------------------------------------------------------- */
-    function getCurrentRouteKeys() {
-      return (state.round % 2 === 1)
-? ['left', 'right', 'center']
-: ['right', 'left', 'center'];
-    }
-
-    function getCurrentRouteLabels() {
-      return (state.round % 2 === 1)
-? ['1.Barat', '2.Timur', '3.Pusat']
-: ['1.Timur', '2.Barat', '3.Pusat'];
-    }
-
-    /* -------------------------------------------------------------
-       DECK & INISIALISASI
-    ------------------------------------------------------------- */
-    function buildDeck() {
-      const deck = [];
-      let uid = 1;
-
-      // Set 1: Atas Biru, Bawah Hijau
-      for (let i = 0; i <= 6; i++) {
-        for (let j = i; j <= 6; j++) {
-          deck.push({
-            id: uid++,
-            set: 1,
-            topVal: i,
-            topCol: 'blue',
-            botVal: j,
-            botCol: 'green',
-            topIsWild: false,
-            botIsWild: false,
-            isDouble: (i === j)
-          });
-        }
+      if (doc.requestFullscreen) {
+        doc.requestFullscreen().catch(() => {});
+      } else if (doc.webkitRequestFullscreen) {
+        doc.webkitRequestFullscreen();
       }
 
-      // Set 2: Atas Amber, Bawah Merah
-      for (let i = 0; i <= 6; i++) {
-        for (let j = i; j <= 6; j++) {
-          deck.push({
-            id: uid++,
-            set: 2,
-            topVal: i,
-            topCol: 'amber',
-            botVal: j,
-            botCol: 'red',
-            topIsWild: false,
-            botIsWild: false,
-            isDouble: (i === j)
-          });
-        }
-      }
-
-      // Kocok Deck
-      for (let k = deck.length - 1; k > 0; k--) {
-        const r = Math.floor(Math.random() * (k + 1));
-        [deck[k], deck[r]] = [deck[r], deck[k]];
-      }
-      return deck;
-    }
-
-    function initGame() {
-      const fullDeck = buildDeck();
-
-      // 1 kartu non-kembar sebagai kartu khusus
-      const specialIdx = fullDeck.findIndex(c =>!c.isDouble);
-      state.specialCard = fullDeck.splice(specialIdx, 1)[0];
-
-      // Tandai kartu dengan petak wild angka (warna tetap asli)
-      fullDeck.forEach(card => {
-        if (card.topVal === state.specialCard.topVal && card.topCol === state.specialCard.topCol) {
-          card.topIsWild = true;
-        }
-        if (card.botVal === state.specialCard.topVal && card.botCol === state.specialCard.topCol) {
-          card.botIsWild = true;
-        }
-      });
-
-      // Bagikan ke 3 Distrik (15 kartu masing-masing)
-      state.pools.left = fullDeck.splice(0, 15);
-      state.pools.center = fullDeck.splice(0, 15);
-      state.pools.right = fullDeck.splice(0, 15);
-
-      // Tangan Pemain & Deck Ronde (masing-masing 5 kartu)
-      state.hand = fullDeck.splice(0, 5);
-      state.timerDeck = fullDeck.splice(0, 5);
-
-      // Pilih Kebijakan Master Plan
-      state.policy = POLICIES[Math.floor(Math.random() * POLICIES.length)];
-
-      state.round = 1;
-      state.stepInRound = 0;
-      state.totalActionsDone = 0;
-      state.selectedPoolTile = null;
-      state.selectedHandTile = null;
-      state.isDiscardPhase = false;
-      state.history = null;
-      state.activeWildPicker = null;
-      state.activeBalloonComboId = null;
-      state.activeAspirationDistrict = null;
-      state.activeScoreDistrict = null;
-
-      hideComboBalloon();
-      hideAspirationBalloon();
-      hideScoreBalloon();
-      switchMpTab('cards');
-      updateActiveDistrictClass();
-      renderAll();
-    }
-
-    /* -------------------------------------------------------------
-       LOGIKA EVALUASI POKER & HAPPINESS DISTRIK
-    ------------------------------------------------------------- */
-    function checkCombo(cells, comboId) {
-      const vals = cells.map(c => c.val).sort((a, b) => a - b);
-      const cols = cells.map(c => c.col);
-
-      const valCounts = {};
-      vals.forEach(v => { valCounts[v] = (valCounts[v] || 0) + 1; });
-      const countsArr = Object.values(valCounts).sort((a, b) => b - a);
-
-      const colCounts = {};
-      cols.forEach(c => { colCounts[c] = (colCounts[c] || 0) + 1; });
-      const colCountsArr = Object.values(colCounts).sort((a, b) => b - a);
-
-      const isFlush = (colCountsArr[0] === 5);
-      const isStraight = (
-        vals[1] === vals[0] + 1 &&
-        vals[2] === vals[1] + 1 &&
-        vals[3] === vals[2] + 1 &&
-        vals[4] === vals[3] + 1
-      );
-
-      switch (comboId) {
-        case 'five_kind':
-          return { isValid: countsArr[0] === 5, participatingIndices: [0, 1, 2, 3, 4] };
-        case 'straight_flush':
-          return { isValid: (isStraight && isFlush), participatingIndices: [0, 1, 2, 3, 4] };
-        case 'four_kind':
-          return { isValid: countsArr[0] >= 4, participatingIndices: [0, 1, 2, 3, 4] };
-        case 'full_house':
-          return { isValid: (countsArr[0] === 3 && countsArr[1] === 2), participatingIndices: [0, 1, 2, 3, 4] };
-        case 'flush':
-          return { isValid: isFlush, participatingIndices: [0, 1, 2, 3, 4] };
-        case 'straight':
-          return { isValid: isStraight, participatingIndices: [0, 1, 2, 3, 4] };
-        case 'color_boat':
-          return { isValid: (colCountsArr[0] === 3 && colCountsArr[1] === 2), participatingIndices: [0, 1, 2, 3, 4] };
-        case 'three_kind':
-          return { isValid: countsArr[0] >= 3, participatingIndices: [0, 1, 2, 3, 4] };
-        case 'two_pair':
-          return { isValid: (countsArr[0] >= 2 && countsArr[1] >= 2), participatingIndices: [0, 1, 2, 3, 4] };
-        case 'one_pair':
-          return { isValid: countsArr[0] >= 2, participatingIndices: [0, 1, 2, 3, 4] };
-        default:
-          return { isValid: false, participatingIndices: [] };
+      if (screen.orientation && screen.orientation.lock) {
+        screen.orientation.lock('landscape').catch(() => {});
       }
     }
 
-    function evaluateLine(cells) {
-      const wildCard = state.specialCard;
-      const isTargetBonus = (c) => (c.val === wildCard.botVal && c.col === wildCard.botCol);
+    // Inisialisasi Event Tombol Homescreen
+    document.addEventListener('DOMContentLoaded', () => {
+      const homescreen = document.getElementById('homescreen-screen');
+      const btnStart = document.getElementById('btn-start-game');
+      const btnTutorial = document.getElementById('btn-open-tutorial');
 
-      let bestScore = 0;
-      let bestComboName = "Nihil";
-
-      for (const comboId of state.policy.active) {
-        const match = checkCombo(cells, comboId);
-        if (match.isValid) {
-          let bonusCount = 0;
-          match.participatingIndices.forEach(idx => {
-            if (isTargetBonus(cells[idx])) bonusCount++;
-          });
-          const totalPts = MASTER_COMBOS[comboId].pts + (bonusCount * 3);
-
-          if (totalPts > bestScore) {
-            bestScore = totalPts;
-            bestComboName = MASTER_COMBOS[comboId].name;
-          }
-        }
-      }
-
-      return { comboName: bestComboName, points: bestScore };
-    }
-
-    function evaluateDistrictHappiness(poolCards, poolKey) {
-      const vals = [];
-      poolCards.forEach(c => {
-        vals.push(c.topVal);
-        vals.push(c.botVal);
-      });
-
-      // 1. Pilar RTH (0, 1, 6) >= 10 petak
-      const rthCount = vals.filter(v => v === 0 || v === 1 || v === 6).length;
-      const hasRth = rthCount >= 10;
-
-      // 2. Pilar Hunian & Layanan (0, 3, 4) >= 10 petak
-      const srvCount = vals.filter(v => v === 0 || v === 3 || v === 4).length;
-      const hasSrv = srvCount >= 10;
-
-      // 3. Pilar Pusat Bisnis (2, 5, 6) >= 10 petak
-      const ecoCount = vals.filter(v => v === 2 || v === 5 || v === 6).length;
-      const hasEco = ecoCount >= 10;
-
-      // 4. Bangunan Favorit Distrik (Sesuai Master Plan) >= 6 petak
-      const favVal = state.policy.fav[poolKey];
-      const favCount = vals.filter(v => v === favVal).length;
-      const hasFav = favCount >= 6;
-
-      let happyScore = 0;
-      if (hasRth) happyScore += 25;
-      if (hasSrv) happyScore += 25;
-      if (hasEco) happyScore += 25;
-      if (hasFav) happyScore += 25;
-
-      const needs = [];
-      if (!hasRth) needs.push(0);
-      if (!hasSrv) needs.push(3);
-      if (!hasEco) needs.push(2);
-      if (!hasFav &&!needs.includes(favVal)) needs.push(favVal);
-
-      return {
-        happyScore,
-        isHappy: happyScore === 100,
-        needs
-      };
-    }
-
-    function evaluatePool(poolCards, poolKey) {
-      let rawPoolScore = 0;
-      const linesInfo = [];
-
-      for (let r = 0; r < 3; r++) {
-        const topCells = [];
-        const botCells = [];
-
-        for (let c = 0; c < 5; c++) {
-          const card = poolCards[r * 5 + c];
-          topCells.push({ val: card.topVal, col: card.topCol });
-          botCells.push({ val: card.botVal, col: card.botCol });
-        }
-
-        const topEval = evaluateLine(topCells);
-        const botEval = evaluateLine(botCells);
-
-        rawPoolScore += topEval.points;
-        rawPoolScore += botEval.points;
-
-        linesInfo.push({ top: topEval, bot: botEval });
-      }
-
-      const happyData = evaluateDistrictHappiness(poolCards, poolKey);
-      const effectiveScore = Math.round(rawPoolScore * (happyData.happyScore / 100));
-
-      return {
-        total: effectiveScore,
-        rawScore: rawPoolScore,
-        lines: linesInfo,
-        happiness: happyData
-      };
-    }
-
-    /* -------------------------------------------------------------
-       RENDER FUNGSI PERMAINAN UTAMA
-    ------------------------------------------------------------- */
-    function renderRouteAndStats() {
-      const rContainer = document.getElementById('route-container');
-      rContainer.innerHTML = `<span class="route-label">Pembangunan:</span>`;
-      const stepNames = getCurrentRouteLabels();
-      const routeKeys = getCurrentRouteKeys();
-
-      routeKeys.forEach((stepKey, idx) => {
-        const node = document.createElement('div');
-        node.className = `step-node ${idx === state.stepInRound? 'active': ''} ${idx < state.stepInRound? 'done': ''}`;
-        node.innerText = stepNames[idx];
-        rContainer.appendChild(node);
-      });
-
-      document.getElementById('round-indicator').innerText = `Ronde ${state.round}/6`;
-    }
-
-    function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx = null) {
-      const dom = document.createElement('div');
-      dom.className = 'domino';
-
-      const isTopBonus = card.topVal === state.specialCard.botVal && card.topCol === state.specialCard.botCol;
-      const isBotBonus = card.botVal === state.specialCard.botVal && card.botCol === state.specialCard.botCol;
-
-      // Half Atas
-      const topHalf = document.createElement('div');
-      topHalf.className = `domino-half c-${card.topCol}${card.topIsWild? ' is-wild': ''}`;
-      topHalf.innerHTML = `
-        ${getBuildingSvg(card.topVal, 17)}
-        <span class="domino-num">${card.topVal}</span>
-        ${card.topIsWild? '<span class="super-wild-tag">⭐</span>': ''}
-        ${isTopBonus? '<span class="bonus-target-tag">+3</span>': ''}
-      `;
-      if (card.topIsWild) {
-        topHalf.title = "Wild Angka: Klik untuk ganti angka";
-        topHalf.onclick = (e) => {
-          e.stopPropagation();
-          openWildPicker(card, 'topVal');
-        };
-      }
-
-      // Half Bawah
-      const botHalf = document.createElement('div');
-      botHalf.className = `domino-half c-${card.botCol}${card.botIsWild? ' is-wild': ''}`;
-      botHalf.innerHTML = `
-        ${getBuildingSvg(card.botVal, 17)}
-        <span class="domino-num">${card.botVal}</span>
-        ${card.botIsWild? '<span class="super-wild-tag">⭐</span>': ''}
-        ${isBotBonus? '<span class="bonus-target-tag">+3</span>': ''}
-      `;
-      if (card.botIsWild) {
-        botHalf.title = "Wild Angka: Klik untuk ganti angka";
-        botHalf.onclick = (e) => {
-          e.stopPropagation();
-          openWildPicker(card, 'botVal');
-        };
-      }
-
-      dom.appendChild(topHalf);
-      dom.appendChild(botHalf);
-
-      if (isPoolTile) {
-        if (state.selectedPoolTile && state.selectedPoolTile.poolKey === poolKey && state.selectedPoolTile.index === poolIdx) {
-          dom.classList.add('selected-tile');
-        }
-        dom.onclick = () => onPoolTileClick(poolKey, poolIdx);
-      }
-
-      return dom;
-    }
-
-    function renderPools() {
-      ['left', 'center', 'right'].forEach(poolKey => {
-        const poolEl = document.getElementById(`grid-${poolKey}`);
-        poolEl.innerHTML = '';
-
-        const evalData = evaluatePool(state.pools[poolKey], poolKey);
-        const dHappy = evalData.happiness.happyScore;
-
-        const scoreEl = document.getElementById(`score-${poolKey}`);
-        scoreEl.innerText = `${evalData.total} pt`;
-
-        const happyBadge = document.getElementById(`happy-${poolKey}`);
-        const happyClass = dHappy >= 70? 'happy-safe': (dHappy >= 50? 'happy-warn': 'happy-danger');
-        const happyEmoji = dHappy >= 70? '😊': (dHappy >= 50? '😐': '⚠️');
-
-        happyBadge.className = `district-happy-badge ${happyClass}`;
-        happyBadge.innerText = `${happyEmoji} ${dHappy}%`;
-
-        for (let r = 0; r < 3; r++) {
-          const rowPair = document.createElement('div');
-          rowPair.className = 'domino-row-pair';
-
-          const track = document.createElement('div');
-          track.className = 'domino-tiles-track';
-
-          for (let c = 0; c < 5; c++) {
-            const idx = r * 5 + c;
-            const card = state.pools[poolKey][idx];
-            const dom = createDominoElement(card, true, poolKey, idx);
-            track.appendChild(dom);
+      if (btnStart) {
+        btnStart.addEventListener('click', () => {
+          triggerFullscreenLandscape();
+          if (homescreen) {
+            homescreen.classList.add('dismissed');
+            setTimeout(() => {
+              homescreen.style.display = 'none';
+            }, 300);
           }
 
-          rowPair.appendChild(track);
-
-          const sidebar = document.createElement('div');
-          sidebar.className = 'row-score-sidebar';
-
-          const topBadge = document.createElement('div');
-          topBadge.className = `line-score-badge ${evalData.lines[r].top.points > 0? 'has-score': ''}`;
-          topBadge.innerHTML = `<span>${evalData.lines[r].top.comboName}</span><span class="line-score-pts">${evalData.lines[r].top.points}</span>`;
-
-          const botBadge = document.createElement('div');
-          botBadge.className = `line-score-badge ${evalData.lines[r].bot.points > 0? 'has-score': ''}`;
-          botBadge.innerHTML = `<span>${evalData.lines[r].bot.comboName}</span><span class="line-score-pts">${evalData.lines[r].bot.points}</span>`;
-
-          sidebar.appendChild(topBadge);
-          sidebar.appendChild(botBadge);
-          rowPair.appendChild(sidebar);
-
-          poolEl.appendChild(rowPair);
-        }
-      });
-    }
-
-    function renderSpecialCardAndTimer() {
-      const spCard = state.specialCard;
-      const spContainer = document.getElementById('special-card-render');
-      spContainer.innerHTML = '';
-
-      const dom = document.createElement('div');
-      dom.className = 'special-card-frame';
-
-      const top = document.createElement('div');
-      top.className = `domino-half c-${spCard.topCol}`;
-      top.innerHTML = `
-        ${getBuildingSvg(spCard.topVal, 15)}
-        <span class="domino-num">${spCard.topVal}</span>
-        <span class="super-wild-tag">⭐</span>
-      `;
-
-      const bot = document.createElement('div');
-      bot.className = `domino-half c-${spCard.botCol}`;
-      bot.innerHTML = `
-        ${getBuildingSvg(spCard.botVal, 15)}
-        <span class="domino-num">${spCard.botVal}</span>
-        <span class="bonus-target-tag">+3</span>
-      `;
-
-      dom.appendChild(top);
-      dom.appendChild(bot);
-      spContainer.appendChild(dom);
-
-      const timerContainer = document.getElementById('timer-slots-container');
-      timerContainer.innerHTML = '';
-      const totalTimerSlots = 5;
-      const sisa = state.timerDeck.length;
-
-      document.getElementById('timer-slots-label').innerText = `${sisa}/5 Tersedia`;
-
-      for (let i = 0; i < totalTimerSlots; i++) {
-        const slot = document.createElement('div');
-        if (i < sisa) {
-          slot.className = 'timer-slot-card has-card';
-          slot.innerText = `Kartu ${i + 1}`;
-        } else {
-          slot.className = 'timer-slot-card';
-          slot.innerText = '✓';
-        }
-        timerContainer.appendChild(slot);
-      }
-    }
-
-    function renderHand() {
-      const container = document.getElementById('hand-cards-container');
-      container.innerHTML = '';
-
-      state.hand.forEach((card, idx) => {
-        const wrap = document.createElement('div');
-        wrap.className = 'hand-domino-wrapper';
-
-        const dom = createDominoElement(card);
-        if (state.selectedHandTile === idx) {
-          dom.classList.add('selected-tile');
-        }
-
-        dom.onclick = () => onHandTileClick(idx);
-
-        if (!state.isDiscardPhase) {
-          dom.ondblclick = (e) => {
-            e.stopPropagation();
-            flipHandCard(idx);
-          };
-
-          const rotBtn = document.createElement('button');
-          rotBtn.className = 'btn-rotate-mini';
-          rotBtn.innerText = '🔄 Putar';
-          rotBtn.onclick = (e) => {
-            e.stopPropagation();
-            flipHandCard(idx);
-          };
-          wrap.appendChild(dom);
-          wrap.appendChild(rotBtn);
-        } else {
-          wrap.appendChild(dom);
-        }
-
-        container.appendChild(wrap);
-      });
-    }
-
-    function renderMasterPlan() {
-      document.getElementById('policy-name').innerText = state.policy.name;
-      const grid = document.getElementById('mp-grid');
-      grid.innerHTML = '';
-
-      state.policy.active.forEach(comboId => {
-        const c = MASTER_COMBOS[comboId];
-        const card = document.createElement('div');
-        card.className = `combo-card ${state.activeBalloonComboId === comboId? 'active-balloon': ''}`;
-
-        const meta = document.createElement('div');
-        meta.className = 'combo-meta';
-        meta.innerHTML = `<span class="combo-name">${c.name}</span><span class="combo-pts">${c.pts} pt</span>`;
-
-        const strip = document.createElement('div');
-        strip.className = 'combo-strip';
-        c.pattern.forEach(pip => {
-          const p = document.createElement('div');
-          p.className = `combo-pip c-${pip.col}`;
-          
-          const iconSvg = getBuildingSvg(pip.val, 12);
-          p.innerHTML = `
-            ${iconSvg}
-            <span>${pip.val}</span>
-          `;
-          strip.appendChild(p);
-        });
-
-        card.appendChild(meta);
-        card.appendChild(strip);
-
-        card.onclick = (e) => {
-          e.stopPropagation();
-          toggleComboBalloon(card, comboId);
-        };
-
-        grid.appendChild(card);
-      });
-    }
-
-    function renderAll() {
-      renderRouteAndStats();
-      renderPools();
-      renderSpecialCardAndTimer();
-      renderHand();
-      renderMasterPlan();
-      updateActionBtn();
-    }
-
-    /* -------------------------------------------------------------
-       KOTAK 4: TAB MASTER PLAN & TOP 5 LEADERBOARD
-    ------------------------------------------------------------- */
-    const LEADERBOARD_API = 'http://fam.web.id:9093/mod/citydomino/leaderboard.php';
-
-    function escapeHtml(str) {
-      if (str === null || str === undefined) return '';
-      return String(str)
-.replace(/&/g, '&amp;')
-.replace(/</g, '&lt;')
-.replace(/>/g, '&gt;')
-.replace(/"/g, '&quot;')
-.replace(/'/g, '&#039;');
-    }
-
-    function switchMpTab(tab) {
-      const btnMp = document.getElementById('tab-btn-mp');
-      const btnLb = document.getElementById('tab-btn-lb');
-      const paneMp = document.getElementById('pane-mp-cards');
-      const paneLb = document.getElementById('pane-mp-lb');
-
-      if (tab === 'cards') {
-        btnMp.classList.add('active');
-        btnLb.classList.remove('active');
-        paneMp.classList.add('active');
-        paneLb.classList.remove('active');
-      } else {
-        btnLb.classList.add('active');
-        btnMp.classList.remove('active');
-        paneLb.classList.add('active');
-        paneMp.classList.remove('active');
-        loadLeaderboard();
-      }
-    }
-
-    function loadLeaderboard() {
-      const container = document.getElementById('lb-view-container');
-      if (!state.policy) return;
-
-      container.innerHTML = '<div class="lb-state-text">Memuat Top 5...</div>';
-
-      fetch(LEADERBOARD_API + '?plan=' + encodeURIComponent(state.policy.name))
-.then(function(res) {
-          return res.json();
-        })
-.then(function(res) {
-          if (res && res.status === 'success') {
-            renderLeaderboardTable(res.data);
-          } else {
-            container.innerHTML = '<div class="lb-state-text">Gagal memuat peringkat.</div>';
+          if (typeof window.startNewGameSession === 'function') {
+            window.startNewGameSession();
           }
-        })
-.catch(function() {
-          container.innerHTML = '<div class="lb-state-text">Offline / papan peringkat belum aktif.</div>';
-        });
-    }
-
-    function renderLeaderboardTable(records) {
-      const container = document.getElementById('lb-view-container');
-      if (!records || records.length === 0) {
-        container.innerHTML = '<div class="lb-state-text">Belum ada rekor.<br>Selesaikan permainan dan jadilah Walikota pertama!</div>';
-        return;
-      }
-
-      let html = '<table class="lb-table">' +
-        '<thead>' +
-          '<tr>' +
-            '<th class="col-rank">RANK</th>' +
-            '<th class="col-name">NAMA</th>' +
-            '<th class="col-score">TOTAL</th>' +
-            '<th class="col-detail">BARAT/PUSAT/TIMUR</th>' +
-          '</tr>' +
-        '</thead>' +
-        '<tbody>';
-
-      records.forEach(function(r, idx) {
-        const rankNum = idx + 1;
-        const rankClass = rankNum <= 3? 'rank-' + rankNum: '';
-        const safeName = escapeHtml(r.name);
-        html += '<tr class="lb-row">' +
-          '<td class="lb-cell rank ' + rankClass + '">' + rankNum + '</td>' +
-          '<td class="lb-cell name" title="' + safeName + '">' + safeName + '</td>' +
-          '<td class="lb-cell total">' + r.total + '</td>' +
-          '<td class="lb-cell breakdown">' + r.left + ' / ' + r.center + ' / ' + r.right + '</td>' +
-        '</tr>';
-      });
-
-      html += '</tbody></table>';
-      container.innerHTML = html;
-    }
-
-    function submitLeaderboardScore(e, total, left, center, right) {
-      e.preventDefault();
-      const inputEl = document.getElementById('lb-player-name');
-      const btnEl = document.getElementById('lb-submit-btn');
-      const statusEl = document.getElementById('lb-submit-status');
-
-      const nameVal = inputEl.value.trim();
-      if (!nameVal) return;
-
-      btnEl.disabled = true;
-      inputEl.disabled = true;
-      statusEl.style.display = 'block';
-      statusEl.className = 'lb-submit-msg';
-      statusEl.innerText = 'Menyimpan skor...';
-
-      const payload = 'action=submit' +
-        '&name=' + encodeURIComponent(nameVal) +
-        '&plan=' + encodeURIComponent(state.policy.name) +
-        '&total=' + encodeURIComponent(total) +
-        '&left=' + encodeURIComponent(left) +
-        '&center=' + encodeURIComponent(center) +
-        '&right=' + encodeURIComponent(right);
-
-      fetch(LEADERBOARD_API, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: payload
-      })
-.then(function(res) {
-          return res.json();
-        })
-.then(function(res) {
-          if (res && res.status === 'success') {
-            statusEl.className = 'lb-submit-msg success';
-            statusEl.innerText = '✓ Berhasil dicatat ke Top 5!';
-            switchMpTab('lb');
-          } else {
-            statusEl.className = 'lb-submit-msg error';
-            statusEl.innerText = 'Gagal menyimpan: ' + (res.message || 'Error server');
-            btnEl.disabled = false;
-            inputEl.disabled = false;
-          }
-        })
-.catch(function() {
-          statusEl.className = 'lb-submit-msg error';
-          statusEl.innerText = 'Gagal terhubung ke server leaderboard.';
-          btnEl.disabled = false;
-          inputEl.disabled = false;
-        });
-    }
-
-    /* -------------------------------------------------------------
-       BALON ASPIRASI KEBAHAGIAAN WARGA DISTRIK
-    ------------------------------------------------------------- */
-    function toggleDistrictAspiration(event, poolKey) {
-      event.stopPropagation();
-      hideComboBalloon();
-      hideScoreBalloon();
-
-      const balloon = document.getElementById('aspiration-balloon');
-      if (state.activeAspirationDistrict === poolKey) {
-        hideAspirationBalloon();
-        return;
-      }
-
-      state.activeAspirationDistrict = poolKey;
-      const evalData = evaluateDistrictHappiness(state.pools[poolKey], poolKey);
-      const titleMap = { left: 'Distrik Barat', center: 'Pusat Kota', right: 'Distrik Timur' };
-
-      document.getElementById('aspirasi-title').innerText = `Aspirasi ${titleMap[poolKey]}`;
-      const contentEl = document.getElementById('aspirasi-content');
-      contentEl.innerHTML = '';
-
-      if (evalData.isHappy) {
-        contentEl.innerHTML = `<div class="aspirasi-satisfied">Warga senang</div>`;
-      } else {
-        evalData.needs.forEach(val => {
-          const item = document.createElement('div');
-          item.className = 'aspirasi-item';
-          item.innerHTML = `<span>Butuh (${getBuildingSvg(val, 16)}${val})</span>`;
-          contentEl.appendChild(item);
         });
       }
 
-      const targetEl = event.currentTarget;
-      const rect = targetEl.getBoundingClientRect();
-      const balloonWidth = 200;
+      if (btnTutorial) {
+        btnTutorial.addEventListener('click', () => {
+          triggerFullscreenLandscape();
+          if (homescreen) {
+            homescreen.classList.add('dismissed');
+            setTimeout(() => {
+              homescreen.style.display = 'none';
+            }, 300);
+          }
 
-      let left = rect.right - balloonWidth;
-      if (left < 10) left = 10;
-      if (left + balloonWidth > window.innerWidth - 10) {
-        left = window.innerWidth - balloonWidth - 10;
-      }
-
-      balloon.style.left = `${left}px`;
-      balloon.style.display = 'flex';
-
-      const balloonHeight = balloon.offsetHeight || 60;
-      const spaceBelow = window.innerHeight - rect.bottom;
-
-      if (spaceBelow > balloonHeight + 10) {
-        balloon.style.top = `${rect.bottom + 8}px`;
-        balloon.classList.remove('arrow-bottom');
-      } else {
-        balloon.style.top = `${rect.top - balloonHeight - 8}px`;
-        balloon.classList.add('arrow-bottom');
-      }
-    }
-
-    function hideAspirationBalloon() {
-      state.activeAspirationDistrict = null;
-      const balloon = document.getElementById('aspiration-balloon');
-      if (balloon) balloon.style.display = 'none';
-    }
-
-    /* -------------------------------------------------------------
-       BALON POPOVER: KALKULASI SKOR DISTRIK
-    ------------------------------------------------------------- */
-    function toggleDistrictScoreBalloon(event, poolKey) {
-      event.stopPropagation();
-      hideComboBalloon();
-      hideAspirationBalloon();
-
-      const balloon = document.getElementById('score-balloon');
-      if (state.activeScoreDistrict === poolKey) {
-        hideScoreBalloon();
-        return;
-      }
-
-      state.activeScoreDistrict = poolKey;
-      const evalData = evaluatePool(state.pools[poolKey], poolKey);
-      const titleMap = { left: 'Distrik Barat', center: 'Pusat Kota', right: 'Distrik Timur' };
-
-      document.getElementById('score-balloon-title').innerText = `Skor ${titleMap[poolKey]}`;
-      const contentEl = document.getElementById('score-balloon-content');
-
-      const raw = evalData.rawScore;
-      const happy = evalData.happiness.happyScore;
-      const total = evalData.total;
-
-      contentEl.innerHTML = `
-        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-          <span>Skor Master Plan:</span>
-          <b style="color:#ffffff;">${raw} pt</b>
-        </div>
-        <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-          <span>Tingkat Kebahagiaan:</span>
-          <b style="color:${happy >= 70? '#34d399': (happy >= 50? '#fbbf24': '#f87171')};">${happy}%</b>
-        </div>
-        <div style="border-top:1px solid #1e293b; margin-top:3px; padding-top:4px; font-size:0.67rem; color:#94a3b8; line-height:1.35;">
-          <b style="color:var(--highlight);">Skor:</b> ${raw} pt × ${happy}% = <b style="color:var(--accent); font-size:0.75rem;">${total} pt</b>
-        </div>
-      `;
-
-      const targetEl = event.currentTarget;
-      const rect = targetEl.getBoundingClientRect();
-      const balloonWidth = 220;
-
-      let left = rect.right - balloonWidth;
-      if (left < 10) left = 10;
-      if (left + balloonWidth > window.innerWidth - 10) {
-        left = window.innerWidth - balloonWidth - 10;
-      }
-
-      balloon.style.left = `${left}px`;
-      balloon.style.display = 'flex';
-
-      const balloonHeight = balloon.offsetHeight || 80;
-      const spaceBelow = window.innerHeight - rect.bottom;
-
-      if (spaceBelow > balloonHeight + 10) {
-        balloon.style.top = `${rect.bottom + 8}px`;
-        balloon.classList.remove('arrow-bottom');
-      } else {
-        balloon.style.top = `${rect.top - balloonHeight - 8}px`;
-        balloon.classList.add('arrow-bottom');
-      }
-    }
-
-    function hideScoreBalloon() {
-      state.activeScoreDistrict = null;
-      const balloon = document.getElementById('score-balloon');
-      if (balloon) balloon.style.display = 'none';
-    }
-
-    /* -------------------------------------------------------------
-       BALON TEKS KETERANGAN ATURAN MASTER PLAN POKER
-    ------------------------------------------------------------- */
-    function toggleComboBalloon(cardEl, comboId) {
-      hideAspirationBalloon();
-      hideScoreBalloon();
-      const balloon = document.getElementById('combo-balloon');
-
-      if (state.activeBalloonComboId === comboId) {
-        hideComboBalloon();
-        return;
-      }
-
-      state.activeBalloonComboId = comboId;
-      const combo = MASTER_COMBOS[comboId];
-
-      document.getElementById('balloon-title').innerText = combo.name;
-      document.getElementById('balloon-pts').innerText = `${combo.pts} pt`;
-      document.getElementById('balloon-desc').innerText = combo.desc;
-
-      const rect = cardEl.getBoundingClientRect();
-      const balloonWidth = 250;
-      let left = rect.left + (rect.width / 2) - 30;
-      if (left + balloonWidth > window.innerWidth - 10) {
-        left = window.innerWidth - balloonWidth - 10;
-      }
-      if (left < 10) left = 10;
-
-      balloon.style.left = `${left}px`;
-      balloon.style.display = 'flex';
-
-      const balloonHeight = balloon.offsetHeight || 80;
-      const spaceAbove = rect.top;
-
-      if (spaceAbove > balloonHeight + 10) {
-        balloon.style.top = `${rect.top - balloonHeight - 8}px`;
-        balloon.classList.remove('arrow-top');
-      } else {
-        balloon.style.top = `${rect.bottom + 8}px`;
-        balloon.classList.add('arrow-top');
-      }
-
-      renderMasterPlan();
-    }
-
-    function hideComboBalloon() {
-      state.activeBalloonComboId = null;
-      const balloon = document.getElementById('combo-balloon');
-      if (balloon) balloon.style.display = 'none';
-      const activeCard = document.querySelector('.combo-card.active-balloon');
-      if (activeCard) activeCard.classList.remove('active-balloon');
-    }
-
-    window.addEventListener('click', (e) => {
-      const balloonCombo = document.getElementById('combo-balloon');
-      if (balloonCombo && balloonCombo.style.display === 'flex' &&!balloonCombo.contains(e.target)) {
-        hideComboBalloon();
-      }
-
-      const balloonAsp = document.getElementById('aspiration-balloon');
-      if (balloonAsp && balloonAsp.style.display === 'flex' &&!balloonAsp.contains(e.target)) {
-        hideAspirationBalloon();
-      }
-
-      const balloonScore = document.getElementById('score-balloon');
-      if (balloonScore && balloonScore.style.display === 'flex' &&!balloonScore.contains(e.target)) {
-        hideScoreBalloon();
+          if (window.CityDominoTutorial && typeof window.CityDominoTutorial.start === 'function') {
+            window.CityDominoTutorial.start();
+          }
+        });
       }
     });
-
-    /* -------------------------------------------------------------
-       INTERAKSI & ALUR PERMAINAN UTAMA
-    ------------------------------------------------------------- */
-    function updateActiveDistrictClass() {
-      const currentRoute = getCurrentRouteKeys();
-      const activeDistrict = currentRoute[state.stepInRound];
-      ['left', 'center', 'right'].forEach(k => {
-        const el = document.getElementById(`pool-${k}`);
-        if (k === activeDistrict &&!state.isDiscardPhase) {
-          el.classList.add('active-district');
-        } else {
-          el.classList.remove('active-district');
-        }
-      });
-    }
-
-    function onPoolTileClick(poolKey, idx) {
-      if (state.isDiscardPhase) return;
-      const currentRoute = getCurrentRouteKeys();
-      const activeDistrict = currentRoute[state.stepInRound];
-      if (poolKey!== activeDistrict) return;
-
-      if (state.selectedPoolTile && state.selectedPoolTile.poolKey === poolKey && state.selectedPoolTile.index === idx) {
-        state.selectedPoolTile = null;
-      } else {
-        state.selectedPoolTile = { poolKey, index: idx };
-      }
-      renderPools();
-      updateActionBtn();
-    }
-
-    function onHandTileClick(idx) {
-      if (state.selectedHandTile === idx) {
-        state.selectedHandTile = null;
-      } else {
-        state.selectedHandTile = idx;
-      }
-      renderHand();
-      updateActionBtn();
-    }
-
-    function flipHandCard(idx) {
-      const card = state.hand[idx];
-      const tempVal = card.topVal;
-      const tempCol = card.topCol;
-      const tempWild = card.topIsWild;
-
-      card.topVal = card.botVal;
-      card.topCol = card.botCol;
-      card.topIsWild = card.botIsWild;
-
-      card.botVal = tempVal;
-      card.botCol = tempCol;
-      card.botIsWild = tempWild;
-
-      renderHand();
-    }
-
-    function updateActionBtn() {
-      const btn = document.getElementById('btn-action');
-      const btnUndo = document.getElementById('btn-undo');
-      const timerAlert = document.getElementById('timer-alert-box');
-
-      btnUndo.disabled = (!state.history || state.isDiscardPhase);
-
-      if (state.isDiscardPhase) {
-        timerAlert.style.display = 'block';
-        btn.innerText = "Buang & Ambil Deck Ronde";
-        btn.disabled = (state.selectedHandTile === null);
-      } else {
-        timerAlert.style.display = 'none';
-        btn.innerText = "Tukar Kartu";
-        btn.disabled = (state.selectedPoolTile === null || state.selectedHandTile === null);
-      }
-    }
-
-    function executeAction() {
-      if (state.isDiscardPhase) {
-        const handIdx = state.selectedHandTile;
-        if (handIdx === null) return;
-
-        const drawnCard = state.timerDeck.shift();
-        state.hand[handIdx] = drawnCard;
-        state.selectedHandTile = null;
-        state.isDiscardPhase = false;
-
-        if (state.round < 6) {
-          state.round++;
-          state.stepInRound = 0;
-          updateActiveDistrictClass();
-          renderAll();
-        } else {
-          endGame();
-        }
-        return;
-      }
-
-      if (!state.selectedPoolTile || state.selectedHandTile === null) return;
-
-      const pKey = state.selectedPoolTile.poolKey;
-      const pIdx = state.selectedPoolTile.index;
-      const hIdx = state.selectedHandTile;
-
-      state.history = {
-        poolKey: pKey,
-        poolIdx: pIdx,
-        handIdx: hIdx,
-        stepInRound: state.stepInRound,
-        totalActionsDone: state.totalActionsDone
-      };
-
-      const tempCard = state.pools[pKey][pIdx];
-      state.pools[pKey][pIdx] = state.hand[hIdx];
-      state.hand[hIdx] = tempCard;
-
-      state.selectedPoolTile = null;
-      state.selectedHandTile = null;
-      state.totalActionsDone++;
-      state.stepInRound++;
-
-      // 3 aksi tercapai per ronde
-      if (state.stepInRound >= 3) {
-        if (state.round >= 6) {
-          // Ronde 6 selesai, langsung evaluasi akhir tanpa jeda deck
-          renderAll();
-          endGame();
-          return;
-        } else {
-          // Ronde 1-5: masuk fase buang & ambil kartu deck
-          state.isDiscardPhase = true;
-        }
-      }
-
-      updateActiveDistrictClass();
-      renderAll();
-    }
-
-    function undoAction() {
-      if (!state.history || state.isDiscardPhase) return;
-
-      const h = state.history;
-      const tempCard = state.pools[h.poolKey][h.poolIdx];
-      state.pools[h.poolKey][h.poolIdx] = state.hand[h.handIdx];
-      state.hand[h.handIdx] = tempCard;
-
-      state.stepInRound = h.stepInRound;
-      state.totalActionsDone = h.totalActionsDone;
-      state.history = null;
-      state.selectedPoolTile = null;
-      state.selectedHandTile = null;
-
-      updateActiveDistrictClass();
-      renderAll();
-    }
-
-    /* -------------------------------------------------------------
-       WILD NUMBER MANUAL PICKER
-    ------------------------------------------------------------- */
-    function openWildPicker(card, propKey, isTutorial = false) {
-      hideComboBalloon();
-      hideAspirationBalloon();
-      hideScoreBalloon();
-      state.activeWildPicker = { card, propKey, isTutorial };
-      const container = document.getElementById('wild-picker-options');
-      container.innerHTML = '';
-
-      for (let v = 0; v <= 6; v++) {
-        const btn = document.createElement('button');
-        btn.className = 'btn-wild-opt';
-        btn.innerHTML = `
-          ${getBuildingSvg(v, 18)}
-          <span>${v}</span>
-        `;
-        if (card[propKey] === v) {
-          btn.style.borderColor = 'var(--accent)';
-          btn.style.color = 'var(--accent)';
-        }
-        btn.onclick = () => {
-          card[propKey] = v;
-          closeWildPicker();
-          if (isTutorial) {
-            onTutWildPicked(v);
-          } else {
-            renderAll();
-          }
-        };
-        container.appendChild(btn);
-      }
-
-      document.getElementById('wild-modal').style.display = 'flex';
-    }
-
-    function closeWildPicker() {
-      state.activeWildPicker = null;
-      document.getElementById('wild-modal').style.display = 'none';
-    }
-
-    /* -------------------------------------------------------------
-       MODAL AKHIR & TUTORIAL
-    ------------------------------------------------------------- */
-    function endGame() {
-      hideComboBalloon();
-      hideAspirationBalloon();
-      hideScoreBalloon();
-
-      const evalLeft = evaluatePool(state.pools.left, 'left');
-      const evalCenter = evaluatePool(state.pools.center, 'center');
-      const evalRight = evaluatePool(state.pools.right, 'right');
-
-      const leftScore = evalLeft.total;
-      const centerScore = evalCenter.total;
-      const rightScore = evalRight.total;
-      const totalScore = leftScore + centerScore + rightScore;
-
-      const leftHappy = evalLeft.happiness.happyScore;
-      const centerHappy = evalCenter.happiness.happyScore;
-      const rightHappy = evalRight.happiness.happyScore;
-
-      document.getElementById('final-left-pts').innerText = `${leftScore} pt`;
-      document.getElementById('final-center-pts').innerText = `${centerScore} pt`;
-      document.getElementById('final-right-pts').innerText = `${rightScore} pt`;
-      document.getElementById('final-total-pts').innerText = `${totalScore} pt`;
-
-      const formatHappyStatus = (h) => {
-        const color = h >= 70? '#34d399': (h >= 50? '#fbbf24': '#f87171');
-        const icon = h >= 70? '😊': (h >= 50? '😐': '⚠️');
-        return `<span style="color:${color}; font-weight:800;">${icon} ${h}%</span>`;
-      };
-
-      document.getElementById('final-left-happy').innerHTML = formatHappyStatus(leftHappy);
-      document.getElementById('final-center-happy').innerHTML = formatHappyStatus(centerHappy);
-      document.getElementById('final-right-happy').innerHTML = formatHappyStatus(rightHappy);
-
-      const titleBox = document.getElementById('city-title-box');
-      const modalTitle = document.getElementById('final-modal-title');
-      const modalDesc = document.getElementById('final-modal-desc');
-      const statusLabel = document.getElementById('city-status-label');
-      const cityTitleEl = document.getElementById('city-title');
-      const lbSection = document.getElementById('lb-submit-container');
-
-      const failedDistricts = [];
-      if (leftHappy < 50) failedDistricts.push('Distrik Barat');
-      if (centerHappy < 50) failedDistricts.push('Pusat Kota');
-      if (rightHappy < 50) failedDistricts.push('Distrik Timur');
-
-      if (failedDistricts.length > 0) {
-        modalTitle.innerText = "KOTA KOLAPS (KALAH)";
-        modalTitle.style.color = "#f87171";
-        modalDesc.innerHTML = `<b style="color:#f87171;">Kerusuhan Sosial Terjadi!</b> Warga di <b>${failedDistricts.join(', ')}</b> tidak puas (Happiness &lt; 50%). Kota dinyatakan gagal.`;
-        titleBox.style.background = "#450a0a";
-        titleBox.style.border = "1px solid #dc2626";
-        statusLabel.innerText = "Status Evaluasi:";
-        cityTitleEl.innerText = "Distrik Kolaps / Kerusuhan";
-        cityTitleEl.style.color = "#f87171";
-
-        lbSection.innerHTML = `
-          <div class="lb-collapse-alert">
-            ⚠️ <b>KOTA GAGAL:</b> Skor tidak dapat dicatat ke papan peringkat karena ada distrik dengan kebahagiaan &lt; 50%.
-          </div>
-        `;
-      } else {
-        modalTitle.innerText = "EVALUASI AKHIR KOTA";
-        modalTitle.style.color = "var(--accent)";
-        modalDesc.innerText = "Semua distrik berhasil memenuhi standar hidup warga (≥ 50%).";
-        titleBox.style.background = "#1e293b";
-        titleBox.style.border = "none";
-        statusLabel.innerText = "Predikat Kota:";
-
-        let title = "Desa Tertinggal";
-        if (totalScore >= 180) title = "Utopia Futuristik";
-        else if (totalScore >= 140) title = "Metropolis Terencana";
-        else if (totalScore >= 100) title = "Kota Satelit Mandiri";
-        else if (totalScore >= 60) title = "Kota Berkembang";
-
-        cityTitleEl.innerText = title;
-        cityTitleEl.style.color = "#facc15";
-
-        lbSection.innerHTML = `
-          <div class="lb-submit-section">
-            <div class="lb-submit-title">🏆 Catat Rekor ke Papan Peringkat</div>
-            <form class="lb-submit-form" onsubmit="submitLeaderboardScore(event, ${totalScore}, ${leftScore}, ${centerScore}, ${rightScore})">
-              <input type="text" id="lb-player-name" class="lb-name-input" placeholder="Nama walikota (maks 15 huruf)..." maxlength="15" required autocomplete="off">
-              <button type="submit" id="lb-submit-btn" class="lb-btn-send">Kirim</button>
-            </form>
-            <div id="lb-submit-status" class="lb-submit-msg" style="display:none;"></div>
-          </div>
-        `;
-      }
-
-      document.getElementById('end-modal').style.display = 'flex';
-    }
-
-    function restartGame() {
-      document.getElementById('end-modal').style.display = 'none';
-      initGame();
-    }
-
-    function openHelpModal() {
-      hideComboBalloon();
-      hideAspirationBalloon();
-      hideScoreBalloon();
-      document.getElementById('help-modal').style.display = 'flex';
-      if (!tutState.initialized) {
-        tutState.initialized = true;
-        loadTutStep(1);
-      }
-    }
-
-    function closeHelpModal() {
-      document.getElementById('help-modal').style.display = 'none';
-    }
-
-    function switchHelpTab(tabKey) {
-      const tabTut = document.getElementById('tab-btn-tut');
-      const tabRules = document.getElementById('tab-btn-rules');
-      const paneTut = document.getElementById('pane-tutorial');
-      const paneRules = document.getElementById('pane-rules');
-
-      if (tabKey === 'tutorial') {
-        tabTut.classList.add('active');
-        tabRules.classList.remove('active');
-        paneTut.classList.add('active');
-        paneRules.classList.remove('active');
-      } else {
-        tabRules.classList.add('active');
-        tabTut.classList.remove('active');
-        paneRules.classList.add('active');
-        paneTut.classList.remove('active');
-      }
-    }
-
-    /* -------------------------------------------------------------
-       MODUL LATIHAN INTERAKTIF (TUTORIAL 4 LANGKAH)
-    ------------------------------------------------------------- */
-    const tutState = {
-      initialized: false,
-      currentStep: 1,
-      isCompleted: false,
-      selectedPoolIdx: null,
-      selectedHandIdx: null,
-      poolCards: [],
-      handCards: []
-    };
-
-    function getTutHappiness() {
-      if (tutState.currentStep === 1 || tutState.currentStep === 2) {
-        return { label: '😊 100% Warga Senang', class: 'happy-safe' };
-      }
-      if (tutState.currentStep === 3) {
-        const hasOneTop = tutState.poolCards.some(c => c.topVal === 1);
-        if (hasOneTop) {
-          return { label: '😊 75% Warga Puas (+50%)', class: 'happy-safe' };
-        }
-        return { label: '⚠️ 25% Krisis (Butuh 1)', class: 'happy-danger' };
-      }
-      return { label: '😊 100% Sejahtera', class: 'happy-safe' };
-    }
-
-    function loadTutStep(stepNum) {
-      tutState.currentStep = stepNum;
-      tutState.isCompleted = false;
-      tutState.selectedPoolIdx = null;
-      tutState.selectedHandIdx = null;
-
-      for (let i = 1; i <= 4; i++) {
-        const dot = document.getElementById(`tut-dot-${i}`);
-        if (dot) {
-          if (i === stepNum) dot.classList.add('active');
-          else dot.classList.remove('active');
-        }
-      }
-
-      const fb = document.getElementById('tut-feedback');
-      fb.style.display = 'none';
-
-      const titleEl = document.getElementById('tut-title');
-      const descEl = document.getElementById('tut-desc');
-      const statusEl = document.getElementById('tut-district-status');
-
-      const overviewBox = document.getElementById('tut-overview-container');
-      const districtBox = document.getElementById('tut-district-box');
-      const handBox = document.getElementById('tut-hand-box');
-
-      if (stepNum === 1) {
-        titleEl.innerText = "Langkah 1: Premis & Antarmuka Kota";
-        descEl.innerHTML = "Kamu adalah Walikota yang merancang 3 distrik selama 6 ronde (total 18 aksi). Angka domino (0–6) mewakili zonasi kota. Capai target skor poker tertinggi dan jaga <b>Kebahagiaan Warga minimal 50%</b> agar kota tidak kolaps!";
-        
-        overviewBox.style.display = 'flex';
-        districtBox.style.display = 'none';
-        handBox.style.display = 'none';
-
-        tutState.poolCards = [];
-        tutState.handCards = [];
-        return;
-      }
-
-      overviewBox.style.display = 'none';
-      districtBox.style.display = 'flex';
-
-      if (stepNum === 2) {
-        titleEl.innerText = "Langkah 2: Skor Poker & Tukar Kartu";
-        descEl.innerHTML = "Pilih kartu tangan <b>[4 | 0]</b>, lalu pilih kartu <b>[2 | 6]</b> di petak ke-5 untuk membentuk <b>Five of a Kind (4-4-4-4-4)</b> di baris atas!<div class='tut-click-tip'>💡 <b>Info:</b> Angka skor di header distrik bisa kamu klik untuk melihat rincian kombinasi & perkalian skornya.</div>";
-        statusEl.innerText = "Target: Five of a Kind (+30 pt)";
-
-        tutState.poolCards = [
-          { topVal: 4, topCol: 'blue', botVal: 1, botCol: 'green', topIsWild: false, botIsWild: false },
-          { topVal: 4, topCol: 'green', botVal: 2, botCol: 'red', topIsWild: false, botIsWild: false },
-          { topVal: 4, topCol: 'amber', botVal: 3, botCol: 'blue', topIsWild: false, botIsWild: false },
-          { topVal: 4, topCol: 'red', botVal: 5, botCol: 'green', topIsWild: false, botIsWild: false },
-          { topVal: 2, topCol: 'blue', botVal: 6, botCol: 'red', topIsWild: false, botIsWild: false }
-        ];
-        tutState.handCards = [
-          { topVal: 4, topCol: 'blue', botVal: 0, botCol: 'green', topIsWild: false, botIsWild: false }
-        ];
-      } else if (stepNum === 3) {
-        titleEl.innerText = "Langkah 3: Putar Kartu & Kepuasan Warga";
-        descEl.innerHTML = "Distrik ini sedang krisis (Happiness <b>25%</b>) karena kekurangan Rumah Tapak (angka 1). Klik <b>🔄 Putar</b> pada kartu tangan agar angka 1 berada di atas, lalu tukar ke petak ke-3 untuk menaikkan kepuasan warga!<div class='tut-click-tip'>💡 <b>Info:</b> Badge status kepuasan (😊/⚠️) bisa kamu klik untuk melihat zonasi apa saja yang dibutuhkan warga.</div>";
-        statusEl.innerText = "Target: Naikkan Happiness ≥ 50%";
-
-        tutState.poolCards = [
-          { topVal: 0, topCol: 'blue', botVal: 6, botCol: 'green', topIsWild: false, botIsWild: false },
-          { topVal: 3, topCol: 'green', botVal: 4, botCol: 'red', topIsWild: false, botIsWild: false },
-          { topVal: 5, topCol: 'amber', botVal: 2, botCol: 'blue', topIsWild: false, botIsWild: false },
-          { topVal: 0, topCol: 'red', botVal: 3, botCol: 'green', topIsWild: false, botIsWild: false },
-          { topVal: 6, topCol: 'blue', botVal: 0, botCol: 'red', topIsWild: false, botIsWild: false }
-        ];
-        tutState.handCards = [
-          { topVal: 5, topCol: 'amber', botVal: 1, botCol: 'green', topIsWild: false, botIsWild: false }
-        ];
-      } else if (stepNum === 4) {
-        titleEl.innerText = "Langkah 4: Kekuatan Bintang (Wild ⭐)";
-        descEl.innerHTML = "Petak ⭐ adalah Wild Angka. Klik petak ⭐ pada kartu ke-3, lalu pilih angka <b>3</b> pada jendela opsi untuk melengkapi <b>Straight Flush (1-2-3-4-5 Biru)</b>!";
-        statusEl.innerText = "Target: Ubah ⭐ jadi 3";
-
-        tutState.poolCards = [
-          { topVal: 1, topCol: 'blue', botVal: 2, botCol: 'green', topIsWild: false, botIsWild: false },
-          { topVal: 2, topCol: 'blue', botVal: 3, botCol: 'red', topIsWild: false, botIsWild: false },
-          { topVal: 0, topCol: 'blue', botVal: 4, botCol: 'green', topIsWild: true, botIsWild: false },
-          { topVal: 4, topCol: 'blue', botVal: 5, botCol: 'red', topIsWild: false, botIsWild: false },
-          { topVal: 5, topCol: 'blue', botVal: 6, botCol: 'green', topIsWild: false, botIsWild: false }
-        ];
-        tutState.handCards = [];
-      }
-
-      renderTutSandbox();
-    }
-
-    function createTutDomino(card, isDistrict = false, idx = 0) {
-      const dom = document.createElement('div');
-      dom.className = 'domino';
-
-      const topHalf = document.createElement('div');
-      topHalf.className = `domino-half c-${card.topCol}${card.topIsWild? ' is-wild': ''}`;
-      topHalf.innerHTML = `
-        ${getBuildingSvg(card.topVal, 17)}
-        <span class="domino-num">${card.topVal}</span>
-        ${card.topIsWild? '<span class="super-wild-tag">⭐</span>': ''}
-      `;
-      if (card.topIsWild) {
-        topHalf.title = "Wild Angka: Klik untuk ganti angka";
-        topHalf.onclick = (e) => {
-          e.stopPropagation();
-          openWildPicker(card, 'topVal', true);
-        };
-      }
-
-      const botHalf = document.createElement('div');
-      botHalf.className = `domino-half c-${card.botCol}${card.botIsWild? ' is-wild': ''}`;
-      botHalf.innerHTML = `
-        ${getBuildingSvg(card.botVal, 17)}
-        <span class="domino-num">${card.botVal}</span>
-        ${card.botIsWild? '<span class="super-wild-tag">⭐</span>': ''}
-      `;
-      if (card.botIsWild) {
-        botHalf.title = "Wild Angka: Klik untuk ganti angka";
-        botHalf.onclick = (e) => {
-          e.stopPropagation();
-          openWildPicker(card, 'botVal', true);
-        };
-      }
-
-      dom.appendChild(topHalf);
-      dom.appendChild(botHalf);
-
-      if (isDistrict) {
-        if (tutState.selectedPoolIdx === idx) {
-          dom.classList.add('selected-tile');
-        }
-        dom.onclick = () => onTutDistrictTileClick(idx);
-      } else {
-        if (tutState.selectedHandIdx === idx) {
-          dom.classList.add('selected-tile');
-        }
-        dom.onclick = () => onTutHandTileClick(idx);
-      }
-
-      return dom;
-    }
-
-    function renderTutSandbox() {
-      const dRow = document.getElementById('tut-district-row');
-      dRow.innerHTML = '';
-
-      const happyInfo = getTutHappiness();
-      const happyBadge = document.getElementById('tut-happy-badge');
-      if (happyBadge) {
-        happyBadge.className = `district-happy-badge ${happyInfo.class}`;
-        happyBadge.innerText = happyInfo.label;
-      }
-
-      const track = document.createElement('div');
-      track.className = 'domino-tiles-track';
-      tutState.poolCards.forEach((c, idx) => {
-        track.appendChild(createTutDomino(c, true, idx));
-      });
-      dRow.appendChild(track);
-
-      const topCells = tutState.poolCards.map(c => ({ val: c.topVal, col: c.topCol }));
-      const botCells = tutState.poolCards.map(c => ({ val: c.botVal, col: c.botCol }));
-
-      const evaluateTutLine = (cells) => {
-        let bestScore = 0;
-        let bestName = "Nihil";
-        const allCombos = ['straight_flush', 'five_kind', 'four_kind', 'full_house', 'flush', 'straight', 'color_boat', 'three_kind', 'two_pair', 'one_pair'];
-        for (const id of allCombos) {
-          const match = checkCombo(cells, id);
-          if (match.isValid) {
-            if (MASTER_COMBOS[id].pts > bestScore) {
-              bestScore = MASTER_COMBOS[id].pts;
-              bestName = MASTER_COMBOS[id].name;
-            }
-          }
-        }
-        return { name: bestName, pts: bestScore };
-      };
-
-      const topEval = evaluateTutLine(topCells);
-      const botEval = evaluateTutLine(botCells);
-
-      const sidebar = document.createElement('div');
-      sidebar.className = 'row-score-sidebar';
-
-      const topBadge = document.createElement('div');
-      topBadge.className = `line-score-badge ${topEval.pts > 0? 'has-score': ''}`;
-      topBadge.innerHTML = `<span>${topEval.name}</span><span class="line-score-pts">${topEval.pts}</span>`;
-
-      const botBadge = document.createElement('div');
-      botBadge.className = `line-score-badge ${botEval.pts > 0? 'has-score': ''}`;
-      botBadge.innerHTML = `<span>${botEval.name}</span><span class="line-score-pts">${botEval.pts}</span>`;
-
-      sidebar.appendChild(topBadge);
-      sidebar.appendChild(botBadge);
-      dRow.appendChild(sidebar);
-
-      const hRow = document.getElementById('tut-hand-row');
-      hRow.innerHTML = '';
-      const handBox = document.getElementById('tut-hand-box');
-
-      if (tutState.currentStep === 4) {
-        handBox.style.display = 'none';
-      } else {
-        handBox.style.display = 'flex';
-        tutState.handCards.forEach((c, idx) => {
-          const wrap = document.createElement('div');
-          wrap.className = 'hand-domino-wrapper';
-
-          const dom = createTutDomino(c, false, idx);
-          dom.ondblclick = (e) => {
-            e.stopPropagation();
-            flipTutHandCard(idx);
-          };
-
-          const rotBtn = document.createElement('button');
-          rotBtn.className = 'btn-rotate-mini';
-          rotBtn.innerText = '🔄 Putar';
-          rotBtn.onclick = (e) => {
-            e.stopPropagation();
-            flipTutHandCard(idx);
-          };
-
-          wrap.appendChild(dom);
-          wrap.appendChild(rotBtn);
-          hRow.appendChild(wrap);
-        });
-      }
-
-      const btnAction = document.getElementById('btn-tut-action');
-      if (btnAction) {
-        btnAction.disabled = (tutState.selectedPoolIdx === null || tutState.selectedHandIdx === null || tutState.isCompleted);
-      }
-    }
-
-    function onTutDistrictTileClick(idx) {
-      if (tutState.isCompleted || tutState.currentStep === 4) return;
-      tutState.selectedPoolIdx = (tutState.selectedPoolIdx === idx)? null: idx;
-      renderTutSandbox();
-    }
-
-    function onTutHandTileClick(idx) {
-      if (tutState.isCompleted) return;
-      tutState.selectedHandIdx = (tutState.selectedHandIdx === idx)? null: idx;
-      renderTutSandbox();
-    }
-
-    function flipTutHandCard(idx) {
-      const card = tutState.handCards[idx];
-      const tempVal = card.topVal;
-      const tempCol = card.topCol;
-      const tempWild = card.topIsWild;
-
-      card.topVal = card.botVal;
-      card.topCol = card.botCol;
-      card.topIsWild = card.botIsWild;
-
-      card.botVal = tempVal;
-      card.botCol = tempCol;
-      card.botIsWild = tempWild;
-
-      renderTutSandbox();
-    }
-
-    function executeTutAction() {
-      if (tutState.selectedPoolIdx === null || tutState.selectedHandIdx === null || tutState.isCompleted) return;
-
-      const pIdx = tutState.selectedPoolIdx;
-      const hIdx = tutState.selectedHandIdx;
-
-      const tempCard = tutState.poolCards[pIdx];
-      tutState.poolCards[pIdx] = tutState.handCards[hIdx];
-      tutState.handCards[hIdx] = tempCard;
-
-      tutState.selectedPoolIdx = null;
-      tutState.selectedHandIdx = null;
-
-      renderTutSandbox();
-
-      const fb = document.getElementById('tut-feedback');
-      const fbText = document.getElementById('tut-feedback-text');
-      const btnNext = document.getElementById('btn-tut-next');
-      btnNext.onclick = nextTutStep;
-
-      if (tutState.currentStep === 2) {
-        const allFours = tutState.poolCards.every(c => c.topVal === 4);
-        if (allFours) {
-          tutState.isCompleted = true;
-          fb.style.display = 'flex';
-          fbText.innerHTML = "🎉 <b>Five of a Kind terbentuk (+30 pt)!</b> Baris atas dan bawah dinilai secara mandiri.";
-          btnNext.innerText = "Lanjut ke Langkah 3 ➔";
-        } else {
-          fb.style.display = 'flex';
-          fbText.innerHTML = "⚠️ Belum Five of a Kind. Klik <b>↺ Ulangi</b> lalu tukar dengan petak ke-5 yang bernilai 2.";
-          btnNext.innerText = "Tutup Info";
-          btnNext.onclick = () => { fb.style.display = 'none'; };
-        }
-      } else if (tutState.currentStep === 3) {
-        if (tutState.poolCards[2].topVal === 1) {
-          tutState.isCompleted = true;
-          fb.style.display = 'flex';
-          fbText.innerHTML = "🎉 <b>Happiness naik ke 75%!</b> Memutar kartu 180° memastikan zonasi yang dibutuhkan warga masuk ke posisi yang tepat. Ingat: minimal 50% di akhir game agar tidak kalah!";
-          btnNext.innerText = "Lanjut ke Langkah 4 ➔";
-        } else {
-          fb.style.display = 'flex';
-          fbText.innerHTML = "⚠️ Angka 1 belum berada di atas (Happiness masih 25%). Klik <b>↺ Ulangi</b>, tekan 🔄 pada kartu tangan, lalu tukar ke petak ke-3.";
-          btnNext.innerText = "Tutup Info";
-          btnNext.onclick = () => { fb.style.display = 'none'; };
-        }
-      }
-    }
-
-    function onTutWildPicked(val) {
-      renderTutSandbox();
-      const fb = document.getElementById('tut-feedback');
-      const fbText = document.getElementById('tut-feedback-text');
-      const btnNext = document.getElementById('btn-tut-next');
-
-      if (val === 3) {
-        tutState.isCompleted = true;
-        fb.style.display = 'flex';
-        fbText.innerHTML = "🎉 <b>Straight Flush 40 pt aktif!</b> Angka petak ⭐ bisa kamu ubah kapan saja tanpa memakan giliran aksi.";
-        btnNext.innerText = "Selesai & Mulai Main! 🚀";
-        btnNext.onclick = nextTutStep;
-      } else {
-        fb.style.display = 'flex';
-        fbText.innerHTML = `⚠️ Petak berubah jadi ${val}. Klik ⭐ lagi lalu pilih angka <b>3</b> untuk melengkapi urutan Straight Flush (1-2-3-4-5).`;
-        btnNext.innerText = "Oke";
-        btnNext.onclick = () => { fb.style.display = 'none'; };
-      }
-    }
-
-    function nextTutStep() {
-      if (tutState.currentStep < 4) {
-        loadTutStep(tutState.currentStep + 1);
-      } else {
-        closeHelpModal();
-      }
-    }
-
-    function resetTutStep() {
-      loadTutStep(tutState.currentStep);
-    }
-
-    window.onload = () => {
-      initGame();
-    };
   </script>
 </body>
 </html>

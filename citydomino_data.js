@@ -66,7 +66,7 @@
       flush: {
         id: 'flush',
         name: 'Flush',
-        pts: 25,
+        pts: 20,
         desc: 'Semua 5 petak di satu baris memiliki warna latar yang sama persis (angka bebas).',
         pattern: [
           { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }, { val: '•', col: 'green' }
@@ -75,7 +75,7 @@
 	  two_pair: {
         id: 'two_pair',
         name: 'Two Pair',
-        pts: 20,
+        pts: 25,
         desc: 'Ada 2 pasang angka kembar yang berbeda (misal sepasang 1 dan sepasang 5).',
         pattern: [
           { val: '1', col: 'blue' }, { val: '1', col: 'red' }, { val: '5', col: 'green' }, { val: '5', col: 'amber' }, { val: '•', col: 'blue' }
