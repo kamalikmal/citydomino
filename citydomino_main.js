@@ -353,7 +353,20 @@ function toggleDistrictAspiration(event, poolKey) {
   contentEl.innerHTML = '';
 
   if (evalData.isHappy) {
-    contentEl.innerHTML = `<div class="aspirasi-satisfied">😊 Warga senang (100% Puas)<div style="font-size:0.63rem; color:#94a3b8; margin-top:3px;">Semua kebutuhan 4/4 terpenuhi</div></div>`;
+    let html = '<div class="aspirasi-req-list">';
+    evalData.reqs.forEach(r => {
+      const cls = r.ok? 'req-ok': 'req-need';
+      const icon = r.ok? '✓': '⚠️';
+      const note = r.ok? 'OK': `-${r.target - r.cur}`;
+      html += `
+        <div class="aspirasi-req-row ${cls}">
+          <span>${icon} ${r.name}</span>
+          <span class="aspirasi-req-val">${r.cur}/${r.target} (${note})</span>
+        </div>`;
+    });
+	html += `<div class="aspirasi-satisfied">😊 Warga senang (100% Puas)<div style="font-size:0.63rem; color:#94a3b8; margin-top:3px;">Semua kebutuhan 4/4 terpenuhi</div></div>`;
+    html += '</div>';
+    contentEl.innerHTML = html;
   } else {
     let html = '<div class="aspirasi-req-list">';
     evalData.reqs.forEach(r => {
