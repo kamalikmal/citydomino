@@ -585,19 +585,27 @@
     },
 
     // -------------------------------------------------------------
-    // LANGKAH 11: EVALUASI HASIL KOMBO WESTFALL
+    // LANGKAH 11: EVALUASI DISTRIK WESTFALL
     // -------------------------------------------------------------
     {
       badge: 'Langkah 11/24',
-      text: '<div class="tut-winning-badge">🎉 HASIL TUKAR BARIS 1:</div><br>' +
-            '• <strong>Five of a Kind (6-6-6-6-6)</strong> terbentuk di baris atas (angka <strong>6 emas</strong> bersinar)! Poin: <strong>+30 pt</strong>.<br>' +
-            '• Nilai 6 dan 1 keduanya masuk kategori <strong>Ekologi (0, 1, 6)</strong>, menaikkan total ke 10/10 petak.<br>' +
-            '• Status distrik resmi berubah menjadi <strong>😊 100%</strong> tanpa potongan skor!',
-      spotlightId: 'tut-row-left-0',
+      text: 'Bagus! Westfall kini memiliki susunan <strong>Flush 6</strong> (semua angka 6). Perhatikan skor dan status kebahagiaan warga yang melonjak!',
+      spotlightResolver: () => {
+        const row = document.getElementById('tut-row-left-0') || document.getElementById('pool-left');
+        const header = document.querySelector('#pool-left.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[0];
+        return [header, row].filter(Boolean);
+      },
+      dialogPosition: 'bottom',
       mode: 'button',
-      buttonText: 'Lanjut ke Eastgate ➔',
+      buttonText: 'Lanjut ke Kartu Wild ➔',
+      clickResolver: () => document.getElementById('tut-row-left-0') || document.getElementById('pool-left'),
       onStart: () => {
         highlightRowWithWinningNumbers('west', 0, 'top', 6);
+        const header = document.querySelector('#pool-left.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[0];
+        if (header) {
+          header.classList.add('tut-pos-rel', 'tutorial-target-highlight');
+          highlightedDomIds.push(header);
+        }
       },
       onComplete: () => {
         clearAllHighlights();
@@ -611,7 +619,6 @@
       badge: 'Langkah 12/24',
       text: 'Perhatikan <strong>Kotak Kartu Khusus [4|3]</strong> di kanan atas! Sisi atas <strong>[4⭐]</strong> menentukan angka <strong>Wild</strong>. Setiap kartu berangka 4 amber otomatis memiliki tanda <strong>⭐</strong>, seperti kartu tangan keduamu <strong>[4⭐|5]</strong>.<br><br>Klik petak <strong>⭐</strong> pada kartu tangan tersebut untuk menentukan angkanya terlebih dahulu!',
       spotlightResolver: () => {
-        // Ambil header panel dan kotak special-section (tanpa #timer-section)
         const specialSec = document.querySelector('.special-section');
         const col6 = specialSec? specialSec.closest('.panel,.pool-column, div'): null;
         const panelHeader = col6? col6.querySelector('.panel-header-simple'): document.querySelector('.panel-header-simple');
@@ -643,12 +650,14 @@
     {
       badge: 'Langkah 13/24',
       text: 'Di jendela Wild Picker, ubah angka 4 menjadi <strong>2</strong> untuk melengkapi susunan Full House (tiga 5 dan dua 2) di Eastgate nanti!',
-      spotlightResolver: () => document.getElementById('wild-picker-options') || document.querySelector('.wild-modal-content'),
+      spotlightResolver: () => document.getElementById('wild-modal') || document.querySelector('.wild-modal-content'),
       dialogPosition: 'top',
       mode: 'click',
       clickResolver: () => {
-        const opts = document.querySelectorAll('#wild-picker-options.btn-wild-opt');
-        return opts[2] || document.getElementById('wild-picker-options');
+        return Array.from(document.querySelectorAll('.btn-wild-opt')).find(btn => {
+          const sp = btn.querySelector('span');
+          return (sp? sp.textContent.trim(): btn.textContent.trim()) === '2';
+        }) || document.getElementById('wild-picker-options');
       },
       onStart: () => {
         const modal = document.getElementById('wild-modal');
@@ -657,13 +666,30 @@
             window.openWildPicker(state.hand[1], 'topVal');
           }
         }
-        const opts = document.querySelectorAll('#wild-picker-options.btn-wild-opt');
-        if (opts[2]) {
-          opts[2].classList.add('tut-button-pulse');
-          opts[2].style.borderColor = 'var(--accent)';
+        
+        // Cari tombol angka 2 dan berikan efek denyut kuning terang
+        const opt2 = Array.from(document.querySelectorAll('.btn-wild-opt')).find(btn => {
+          const sp = btn.querySelector('span');
+          return (sp? sp.textContent.trim(): btn.textContent.trim()) === '2';
+        });
+
+        if (opt2) {
+          opt2.classList.add('tut-button-pulse');
+          opt2.style.borderColor = '#facc15';
+          opt2.style.boxShadow = '0 0 14px rgba(250, 204, 21, 0.85)';
         }
       },
       onComplete: () => {
+        const opt2 = Array.from(document.querySelectorAll('.btn-wild-opt')).find(btn => {
+          const sp = btn.querySelector('span');
+          return (sp? sp.textContent.trim(): btn.textContent.trim()) === '2';
+        });
+        if (opt2) {
+          opt2.classList.remove('tut-button-pulse');
+          opt2.style.borderColor = '';
+          opt2.style.boxShadow = '';
+        }
+
         if (state && state.hand && state.hand[1]) {
           state.hand[1].topVal = 2;
         }
@@ -682,11 +708,49 @@
     // -------------------------------------------------------------
     {
       badge: 'Langkah 14/24',
-      text: 'Kartu tanganmu kini sudah bernilai <strong>[2|5]</strong>. Klik kartu tangan tersebut untuk memilihnya!',
+      text: 'Kartu tanganmu kini sudah bernilai <strong>[2|5]</strong>. Klik kontraktor tersebut untuk memilihnya!',
       spotlightId: 'tut-hand-card-1',
       clickId: 'tut-hand-card-1',
       pulseId: 'tut-hand-card-1',
-      mode: 'click'
+      mode: 'click',
+      onStart: () => {
+        // Nonaktifkan sementara buka modal agar klik pada angka 2 tidak membuka modal lagi
+        if (typeof window.openWildPicker === 'function') {
+          window._tempWildPickerBackup = window.openWildPicker;
+          window.openWildPicker = () => {};
+        }
+
+        // Matikan pointer-events paruh kartu agar klik membubbles langsung ke kartu tangan utama
+        const card = document.getElementById('tut-hand-card-1');
+        if (card) {
+          card.querySelectorAll('.domino-half').forEach(half => {
+            half.style.pointerEvents = 'none';
+          });
+        }
+      },
+      onComplete: () => {
+        if (window._tempWildPickerBackup) {
+          window.openWildPicker = window._tempWildPickerBackup;
+          delete window._tempWildPickerBackup;
+        }
+
+        const card = document.getElementById('tut-hand-card-1');
+        if (card) {
+          card.querySelectorAll('.domino-half').forEach(half => {
+            half.style.pointerEvents = '';
+          });
+        }
+
+        if (state) {
+          state.selectedHandTile = 1;
+        }
+        if (typeof window.closeWildPicker === 'function') {
+          window.closeWildPicker();
+        }
+        if (typeof window.renderHand === 'function') {
+          window.renderHand();
+        }
+      }
     },
 
     // -------------------------------------------------------------
@@ -721,11 +785,21 @@
       text: '<div class="tut-winning-badge">🎉 HASIL TUKAR BARIS 1:</div><br>' +
             '• Baris atas Eastgate sukses membentuk <strong>Full House (Tiga 5 & Dua 2)</strong>! Poin: <strong>+20 pt</strong>.<br>' +
             '• Nilai 2 dan 5 masuk pilar <strong>Bisnis (2, 5, 6)</strong>, menaikkan kepuasan warga Eastgate menjadi <strong>😊 100%</strong>!',
-      spotlightId: 'tut-row-right-0',
+      spotlightResolver: () => {
+        const row = document.getElementById('tut-row-right-0') || document.getElementById('pool-right');
+        const header = document.querySelector('#pool-right.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[2];
+        return [header, row].filter(Boolean);
+      },
       mode: 'button',
       buttonText: 'Lanjut ke Midvale ➔',
+      clickResolver: () => document.getElementById('tut-row-right-0') || document.getElementById('pool-right'),
       onStart: () => {
         highlightRowWithWinningNumbers('east', 0, 'top');
+        const header = document.querySelector('#pool-right.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[2];
+        if (header) {
+          header.classList.add('tut-pos-rel', 'tutorial-target-highlight');
+          highlightedDomIds.push(header);
+        }
       },
       onComplete: () => {
         clearAllHighlights();
@@ -781,11 +855,21 @@
             '• Baris bawah melengkapi <strong>Full House (Tiga 4 & Dua 2)</strong> senilai <strong>+20 pt</strong>!<br>' +
             '• <strong>Bonus Kartu Khusus:</strong> Petak [3] biru menyumbang tambahan <strong>+3 poin ekstra</strong>!<br>' +
             '• Midvale resmi mencapai status <strong>😊 100%</strong>!',
-      spotlightId: 'tut-row-center-0',
+      spotlightResolver: () => {
+        const row = document.getElementById('tut-row-center-0') || document.getElementById('pool-center');
+        const header = document.querySelector('#pool-center.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[1];
+        return [header, row].filter(Boolean);
+      },
       mode: 'button',
       buttonText: 'Masuk Akhir Ronde ➔',
+      clickResolver: () => document.getElementById('tut-row-center-0') || document.getElementById('pool-center'),
       onStart: () => {
         highlightRowWithWinningNumbers('mid', 0, 'both');
+        const header = document.querySelector('#pool-center.pool-header-actions') || document.querySelectorAll('.pool-header-actions')[1];
+        if (header) {
+          header.classList.add('tut-pos-rel', 'tutorial-target-highlight');
+          highlightedDomIds.push(header);
+        }
       },
       onComplete: () => {
         clearAllHighlights();
@@ -982,7 +1066,6 @@
 
     clearAllHighlights();
 
-    // Pastikan balon popover tertutup jika langkahnya berpindah
     if (index!== 1 && typeof window.hideComboBalloon === 'function') window.hideComboBalloon();
     if (index!== 3 && typeof window.hideAspirationBalloon === 'function') window.hideAspirationBalloon();
     if (index!== 5 && typeof window.hideScoreBalloon === 'function') window.hideScoreBalloon();
@@ -1056,6 +1139,11 @@
     clearClickShields();
     setThreeDistrictsBright(false);
 
+    if (window._tempWildPickerBackup) {
+      window.openWildPicker = window._tempWildPickerBackup;
+      delete window._tempWildPickerBackup;
+    }
+
     if (typeof window.hideAspirationBalloon === 'function') window.hideAspirationBalloon();
     if (typeof window.hideScoreBalloon === 'function') window.hideScoreBalloon();
     if (typeof window.hideComboBalloon === 'function') window.hideComboBalloon();
@@ -1095,6 +1183,11 @@
     isTutorialActive = false;
     isAdvancingStep = false;
     document.body.classList.remove('tutorial-active');
+
+    if (window._tempWildPickerBackup) {
+      window.openWildPicker = window._tempWildPickerBackup;
+      delete window._tempWildPickerBackup;
+    }
 
     clearAllHighlights();
     clearClickShields();
