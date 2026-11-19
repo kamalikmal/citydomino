@@ -1,5 +1,6 @@
 /* =============================================================
    CITY DOMINO - STATE UTAMA, RENDER UI & KONTROL PEMAIN
+   Terintegrasi dengan citydomino_i18n.js
    ============================================================= */
 
 const state = {
@@ -47,7 +48,7 @@ function initGame() {
   state.pools.center = fullDeck.splice(0, 15);
   state.pools.right = fullDeck.splice(0, 15);
 
-  // Tangan Pemain & Deck Ronde (masing-masing 5 kartu)
+  // Tangan Pemain & Deck Fase (masing-masing 5 kartu)
   state.hand = fullDeck.splice(0, 5);
   state.timerDeck = fullDeck.splice(0, 5);
 
@@ -76,7 +77,8 @@ function initGame() {
 
 function renderRouteAndStats() {
   const rContainer = document.getElementById('route-container');
-  rContainer.innerHTML = `<span class="route-label">Rute Pembangunan:</span>`;
+  const routeLabelText = typeof t === 'function'? t('route_label'): 'Rute Pembangunan:';
+  rContainer.innerHTML = `<span class="route-label">${routeLabelText}</span>`;
   const stepNames = getCurrentRouteLabels();
   const routeKeys = getCurrentRouteKeys();
 
@@ -87,7 +89,10 @@ function renderRouteAndStats() {
     rContainer.appendChild(node);
   });
 
-  document.getElementById('round-indicator').innerText = `Ronde ${state.round}/6`;
+  const phaseIndicatorText = typeof t === 'function'
+? t('phase_indicator', { cur: state.round, max: 6 })
+: `Phase ${state.round}/6`;
+  document.getElementById('round-indicator').innerText = phaseIndicatorText;
 }
 
 function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx = null) {
@@ -96,6 +101,7 @@ function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx =
 
   const isTopBonus = card.topVal === state.specialCard.botVal && card.topCol === state.specialCard.botCol;
   const isBotBonus = card.botVal === state.specialCard.botVal && card.botCol === state.specialCard.botCol;
+  const wildTooltipText = typeof t === 'function'? t('wild_tooltip'): 'Wild Angka: Klik untuk ganti angka';
 
   // Half Atas
   const topHalf = document.createElement('div');
@@ -107,7 +113,7 @@ function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx =
     ${isTopBonus? '<span class="bonus-target-tag">+3</span>': ''}
   `;
   if (card.topIsWild) {
-    topHalf.title = "Wild Angka: Klik untuk ganti angka";
+    topHalf.title = wildTooltipText;
     topHalf.onclick = (e) => {
       e.stopPropagation();
       openWildPicker(card, 'topVal');
@@ -124,7 +130,7 @@ function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx =
     ${isBotBonus? '<span class="bonus-target-tag">+3</span>': ''}
   `;
   if (card.botIsWild) {
-    botHalf.title = "Wild Angka: Klik untuk ganti angka";
+    botHalf.title = wildTooltipText;
     botHalf.onclick = (e) => {
       e.stopPropagation();
       openWildPicker(card, 'botVal');
@@ -145,6 +151,8 @@ function createDominoElement(card, isPoolTile = false, poolKey = null, poolIdx =
 }
 
 function renderPools() {
+  const ptsSuffix = typeof t === 'function'? t('points_suffix'): 'poin';
+
   ['left', 'center', 'right'].forEach(poolKey => {
     const poolEl = document.getElementById(`grid-${poolKey}`);
     poolEl.innerHTML = '';
@@ -153,7 +161,7 @@ function renderPools() {
     const dHappy = evalData.happiness.happyScore;
 
     const scoreEl = document.getElementById(`score-${poolKey}`);
-    scoreEl.innerText = `${evalData.total} poin`;
+    scoreEl.innerText = `${evalData.total} ${ptsSuffix}`;
 
     const happyBadge = document.getElementById(`happy-${poolKey}`);
     const happyClass = dHappy >= 70? 'happy-safe': (dHappy >= 50? 'happy-warn': 'happy-danger');
@@ -230,14 +238,15 @@ function renderSpecialCardAndTimer() {
   timerContainer.innerHTML = '';
   const totalTimerSlots = 5;
   const sisa = state.timerDeck.length;
+  const availText = typeof t === 'function'? t('timer_available'): 'Tersedia';
 
-  document.getElementById('timer-slots-label').innerText = `${sisa}/5 Tersedia`;
+  document.getElementById('timer-slots-label').innerText = `${sisa}/5 ${availText}`;
 
   for (let i = 0; i < totalTimerSlots; i++) {
     const slot = document.createElement('div');
     if (i < sisa) {
       slot.className = 'timer-slot-card has-card';
-      slot.innerText = `Kartu ${i + 1}`;
+      slot.innerText = typeof t === 'function'? t('timer_card_label', { num: i + 1 }): `Kartu ${i + 1}`;
     } else {
       slot.className = 'timer-slot-card';
       slot.innerText = '✓';
@@ -249,6 +258,7 @@ function renderSpecialCardAndTimer() {
 function renderHand() {
   const container = document.getElementById('hand-cards-container');
   container.innerHTML = '';
+  const rotateBtnText = typeof t === 'function'? t('btn_rotate'): '🔄 Putar';
 
   state.hand.forEach((card, idx) => {
     const wrap = document.createElement('div');
@@ -269,7 +279,7 @@ function renderHand() {
 
       const rotBtn = document.createElement('button');
       rotBtn.className = 'btn-rotate-mini';
-      rotBtn.innerText = '🔄 Putar';
+      rotBtn.innerText = rotateBtnText;
       rotBtn.onclick = (e) => {
         e.stopPropagation();
         flipHandCard(idx);
@@ -288,6 +298,7 @@ function renderMasterPlan() {
   document.getElementById('policy-name').innerText = state.policy.name;
   const grid = document.getElementById('mp-grid');
   grid.innerHTML = '';
+  const ptsSuffix = typeof t === 'function'? t('points_suffix'): 'poin';
 
   state.policy.active.forEach(comboId => {
     const c = MASTER_COMBOS[comboId];
@@ -296,7 +307,7 @@ function renderMasterPlan() {
 
     const meta = document.createElement('div');
     meta.className = 'combo-meta';
-    meta.innerHTML = `<span class="combo-name">${c.name}</span><span class="combo-pts">${c.pts} poin</span>`;
+    meta.innerHTML = `<span class="combo-name">${c.name}</span><span class="combo-pts">${c.pts} ${ptsSuffix}</span>`;
 
     const strip = document.createElement('div');
     strip.className = 'combo-strip';
@@ -346,42 +357,39 @@ function toggleDistrictAspiration(event, poolKey) {
 
   state.activeAspirationDistrict = poolKey;
   const evalData = evaluateDistrictHappiness(state.pools[poolKey], poolKey);
-  const titleMap = { left: 'Westfall', center: 'Midvale', right: 'Eastgate' };
+  const titleMap = {
+    left: typeof t === 'function'? t('district_westfall'): 'Westfall',
+    center: typeof t === 'function'? t('district_midvale'): 'Midvale',
+    right: typeof t === 'function'? t('district_eastgate'): 'Eastgate'
+  };
 
-  document.getElementById('aspirasi-title').innerText = `Aspirasi ${titleMap[poolKey]}`;
+  const aspTitleText = typeof t === 'function'
+? t('aspiration_title', { name: titleMap[poolKey] })
+: `Aspirasi ${titleMap[poolKey]}`;
+  document.getElementById('aspirasi-title').innerText = aspTitleText;
+
   const contentEl = document.getElementById('aspirasi-content');
   contentEl.innerHTML = '';
 
+  let html = '<div class="aspirasi-req-list">';
+  evalData.reqs.forEach(r => {
+    const cls = r.ok? 'req-ok': 'req-need';
+    const icon = r.ok? '✓': '⚠️';
+    const note = r.ok? 'OK': `-${r.target - r.cur}`;
+    html += `
+      <div class="aspirasi-req-row ${cls}">
+        <span>${icon} ${r.name}</span>
+        <span class="aspirasi-req-val">${r.cur}/${r.target} (${note})</span>
+      </div>`;
+  });
+
   if (evalData.isHappy) {
-    let html = '<div class="aspirasi-req-list">';
-    evalData.reqs.forEach(r => {
-      const cls = r.ok? 'req-ok': 'req-need';
-      const icon = r.ok? '✓': '⚠️';
-      const note = r.ok? 'OK': `-${r.target - r.cur}`;
-      html += `
-        <div class="aspirasi-req-row ${cls}">
-          <span>${icon} ${r.name}</span>
-          <span class="aspirasi-req-val">${r.cur}/${r.target} (${note})</span>
-        </div>`;
-    });
-	html += `<div class="aspirasi-satisfied">😊 Warga senang (100% Puas)<div style="font-size:0.63rem; color:#94a3b8; margin-top:3px;">Semua kebutuhan 4/4 terpenuhi</div></div>`;
-    html += '</div>';
-    contentEl.innerHTML = html;
-  } else {
-    let html = '<div class="aspirasi-req-list">';
-    evalData.reqs.forEach(r => {
-      const cls = r.ok? 'req-ok': 'req-need';
-      const icon = r.ok? '✓': '⚠️';
-      const note = r.ok? 'OK': `-${r.target - r.cur}`;
-      html += `
-        <div class="aspirasi-req-row ${cls}">
-          <span>${icon} ${r.name}</span>
-          <span class="aspirasi-req-val">${r.cur}/${r.target} (${note})</span>
-        </div>`;
-    });
-    html += '</div>';
-    contentEl.innerHTML = html;
+    const satTitle = typeof t === 'function'? t('aspiration_satisfied'): '😊 Warga senang (100% Puas)';
+    const satSub = typeof t === 'function'? t('aspiration_all_met'): 'Semua kebutuhan 4/4 terpenuhi';
+    html += `<div class="aspirasi-satisfied">${satTitle}<div style="font-size:0.63rem; color:#94a3b8; margin-top:3px;">${satSub}</div></div>`;
   }
+  html += '</div>';
+  contentEl.innerHTML = html;
 
   const targetEl = event.currentTarget;
   const rect = targetEl.getBoundingClientRect();
@@ -427,26 +435,38 @@ function toggleDistrictScoreBalloon(event, poolKey) {
 
   state.activeScoreDistrict = poolKey;
   const evalData = evaluatePool(state.pools[poolKey], poolKey);
-  const titleMap = { left: 'Westfall', center: 'Midvale', right: 'Eastgate' };
+  const titleMap = {
+    left: typeof t === 'function'? t('district_westfall'): 'Westfall',
+    center: typeof t === 'function'? t('district_midvale'): 'Midvale',
+    right: typeof t === 'function'? t('district_eastgate'): 'Eastgate'
+  };
 
-  document.getElementById('score-balloon-title').innerText = `Skor ${titleMap[poolKey]}`;
+  const scoreTitleText = typeof t === 'function'
+? t('score_balloon_title', { name: titleMap[poolKey] })
+: `Skor ${titleMap[poolKey]}`;
+  document.getElementById('score-balloon-title').innerText = scoreTitleText;
   const contentEl = document.getElementById('score-balloon-content');
 
   const raw = evalData.rawScore;
   const happy = evalData.happiness.happyScore;
   const total = evalData.total;
+  const ptsSuffix = typeof t === 'function'? t('points_suffix'): 'poin';
+
+  const lblMpScore = typeof t === 'function'? t('score_master_plan'): 'Skor Master Plan:';
+  const lblHappyLevel = typeof t === 'function'? t('happiness_level'): 'Tingkat Kebahagiaan:';
+  const lblScoreCalc = typeof t === 'function'? t('score_calc_label'): 'Skor:';
 
   contentEl.innerHTML = `
     <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-      <span>Skor Master Plan:</span>
-      <b style="color:#ffffff;">${raw} poin</b>
+      <span>${lblMpScore}</span>
+      <b style="color:#ffffff;">${raw} ${ptsSuffix}</b>
     </div>
     <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#cbd5e1;">
-      <span>Tingkat Kebahagiaan:</span>
+      <span>${lblHappyLevel}</span>
       <b style="color:${happy >= 70? '#34d399': (happy >= 50? '#fbbf24': '#f87171')};">${happy}%</b>
     </div>
     <div style="border-top:1px solid #1e293b; margin-top:3px; padding-top:4px; font-size:0.67rem; color:#94a3b8; line-height:1.35;">
-      <b style="color:var(--highlight);">Skor:</b> ${raw} poin × ${happy}% = <b style="color:var(--accent); font-size:0.75rem;">${total} poin</b>
+      <b style="color:var(--highlight);">${lblScoreCalc}</b> ${raw} ${ptsSuffix} × ${happy}% = <b style="color:var(--accent); font-size:0.75rem;">${total} ${ptsSuffix}</b>
     </div>
   `;
 
@@ -493,9 +513,10 @@ function toggleComboBalloon(cardEl, comboId) {
 
   state.activeBalloonComboId = comboId;
   const combo = MASTER_COMBOS[comboId];
+  const ptsSuffix = typeof t === 'function'? t('points_suffix'): 'poin';
 
   document.getElementById('balloon-title').innerText = combo.name;
-  document.getElementById('balloon-pts').innerText = `${combo.pts} poin`;
+  document.getElementById('balloon-pts').innerText = `${combo.pts} ${ptsSuffix}`;
   document.getElementById('balloon-desc').innerText = combo.desc;
 
   const rect = cardEl.getBoundingClientRect();
@@ -618,12 +639,20 @@ function flipHandCard(idx) {
 function getNextTargetLabel() {
   const currentRoute = getCurrentRouteKeys();
   const nextStep = state.stepInRound + 1;
-  const districtNameMap = { left: 'Westfall', center: 'Midvale', right: 'Eastgate' };
+  const districtNameMap = {
+    left: typeof t === 'function'? t('district_westfall'): 'Westfall',
+    center: typeof t === 'function'? t('district_midvale'): 'Midvale',
+    right: typeof t === 'function'? t('district_eastgate'): 'Eastgate'
+  };
   
   if (nextStep < currentRoute.length) {
     return districtNameMap[currentRoute[nextStep]];
   } else {
-    return (state.round < 6)? 'Bursa': 'Selesai';
+    if (state.round < 6) {
+      return typeof t === 'function'? t('btn_target_market'): 'Bursa';
+    } else {
+      return typeof t === 'function'? t('btn_target_finish'): 'Selesai';
+    }
   }
 }
 
@@ -636,12 +665,14 @@ function updateActionBtn() {
 
   if (state.isDiscardPhase) {
     timerAlert.style.display = 'block';
-    btn.innerText = "Buang & Ambil Bursa";
+    btn.innerText = typeof t === 'function'? t('btn_discard_draw'): 'Buang & Ambil Bursa';
     btn.disabled = (state.selectedHandTile === null);
   } else {
     timerAlert.style.display = 'none';
     const nextTarget = getNextTargetLabel();
-    btn.innerText = `Tukar (Next: ${nextTarget})`;
+    btn.innerText = typeof t === 'function'
+? t('btn_swap', { target: nextTarget })
+: `Tukar (Next: ${nextTarget})`;
     btn.disabled = (state.selectedPoolTile === null || state.selectedHandTile === null);
   }
 }
@@ -745,7 +776,7 @@ function openWildPicker(card, propKey, isTutorial = false) {
       card[propKey] = v;
       closeWildPicker();
       if (isTutorial) {
-        onTutWildPicked(v);
+        if (typeof onTutWildPicked === 'function') onTutWildPicked(v);
       } else {
         renderAll();
       }
@@ -778,11 +809,12 @@ function endGame() {
   const leftHappy = evalLeft.happiness.happyScore;
   const centerHappy = evalCenter.happiness.happyScore;
   const rightHappy = evalRight.happiness.happyScore;
+  const ptsSuffix = typeof t === 'function'? t('points_suffix'): 'poin';
 
-  document.getElementById('final-left-pts').innerText = `${leftScore} poin`;
-  document.getElementById('final-center-pts').innerText = `${centerScore} poin`;
-  document.getElementById('final-right-pts').innerText = `${rightScore} poin`;
-  document.getElementById('final-total-pts').innerText = `${totalScore} poin`;
+  document.getElementById('final-left-pts').innerText = `${leftScore} ${ptsSuffix}`;
+  document.getElementById('final-center-pts').innerText = `${centerScore} ${ptsSuffix}`;
+  document.getElementById('final-right-pts').innerText = `${rightScore} ${ptsSuffix}`;
+  document.getElementById('final-total-pts').innerText = `${totalScore} ${ptsSuffix}`;
 
   const formatHappyStatus = (h) => {
     const color = h >= 70? '#34d399': (h >= 50? '#fbbf24': '#f87171');
@@ -801,49 +833,60 @@ function endGame() {
   const cityTitleEl = document.getElementById('city-title');
   const lbSection = document.getElementById('lb-submit-container');
 
+  const nameWestfall = typeof t === 'function'? t('district_westfall'): 'Westfall';
+  const nameMidvale = typeof t === 'function'? t('district_midvale'): 'Midvale';
+  const nameEastgate = typeof t === 'function'? t('district_eastgate'): 'Eastgate';
+
   const failedDistricts = [];
-  if (leftHappy < 50) failedDistricts.push('Westfall');
-  if (centerHappy < 50) failedDistricts.push('Midvale');
-  if (rightHappy < 50) failedDistricts.push('Eastgate');
+  if (leftHappy < 50) failedDistricts.push(nameWestfall);
+  if (centerHappy < 50) failedDistricts.push(nameMidvale);
+  if (rightHappy < 50) failedDistricts.push(nameEastgate);
 
   if (failedDistricts.length > 0) {
-    modalTitle.innerText = "KOTA KOLAPS (KALAH)";
-    modalTitle.style.color = "#f87171";
-    modalDesc.innerHTML = `<b style="color:#f87171;">Kerusuhan Sosial Terjadi!</b> Warga di <b>${failedDistricts.join(', ')}</b> tidak puas (Happiness &lt; 50%). Kota dinyatakan gagal.`;
-    titleBox.style.background = "#450a0a";
-    titleBox.style.border = "1px solid #dc2626";
-    statusLabel.innerText = "Status Evaluasi:";
-    cityTitleEl.innerText = "Distrik Kolaps / Kerusuhan";
-    cityTitleEl.style.color = "#f87171";
+    modalTitle.innerText = typeof t === 'function'? t('modal_defeat_title'): 'KOTA KOLAPS (KALAH)';
+    modalTitle.style.color = '#f87171';
+    modalDesc.innerHTML = typeof t === 'function'
+? t('modal_defeat_desc', { districts: failedDistricts.join(', ') })
+: `<b style="color:#f87171;">Kerusuhan Sosial Terjadi!</b> Warga di <b>${failedDistricts.join(', ')}</b> tidak puas (Happiness &lt; 50%). Kota dinyatakan gagal.`;
+    titleBox.style.background = '#450a0a';
+    titleBox.style.border = '1px solid #dc2626';
+    statusLabel.innerText = typeof t === 'function'? t('modal_status_label'): 'Status Evaluasi:';
+    cityTitleEl.innerText = typeof t === 'function'? t('modal_defeat_status'): 'Distrik Kolaps / Kerusuhan';
+    cityTitleEl.style.color = '#f87171';
 
-    lbSection.innerHTML = `
-      <div class="lb-collapse-alert">
-        ⚠️ <b>KOTA GAGAL:</b> Skor tidak dapat dicatat ke papan peringkat karena ada distrik dengan kebahagiaan &lt; 50%.
-      </div>
-    `;
+    const alertMsg = typeof t === 'function'
+? t('lb_collapse_alert')
+: '⚠️ <b>KOTA GAGAL:</b> Skor tidak dapat dicatat ke papan peringkat karena ada distrik dengan kebahagiaan &lt; 50%.';
+    lbSection.innerHTML = `<div class="lb-collapse-alert">${alertMsg}</div>`;
   } else {
-    modalTitle.innerText = "EVALUASI AKHIR KOTA";
-    modalTitle.style.color = "var(--accent)";
-    modalDesc.innerText = "Semua distrik berhasil memenuhi standar hidup warga (≥ 50%).";
-    titleBox.style.background = "#1e293b";
-    titleBox.style.border = "none";
-    statusLabel.innerText = "Predikat Kota:";
+    modalTitle.innerText = typeof t === 'function'? t('modal_victory_title'): 'EVALUASI AKHIR KOTA';
+    modalTitle.style.color = 'var(--accent)';
+    modalDesc.innerText = typeof t === 'function'
+? t('modal_victory_desc')
+: 'Semua distrik berhasil memenuhi standar hidup warga (≥ 50%).';
+    titleBox.style.background = '#1e293b';
+    titleBox.style.border = 'none';
+    statusLabel.innerText = typeof t === 'function'? t('modal_predicate_label'): 'Predikat Kota:';
 
-    let title = "Desa Tertinggal";
-    if (totalScore >= 180) title = "Utopia Futuristik";
-    else if (totalScore >= 140) title = "Metropolis Terencana";
-    else if (totalScore >= 100) title = "Kota Satelit Mandiri";
-    else if (totalScore >= 60) title = "Kota Berkembang";
+    let title = typeof t === 'function'? t('rank_underdeveloped'): 'Desa Tertinggal';
+    if (totalScore >= 180) title = typeof t === 'function'? t('rank_utopia'): 'Utopia Futuristik';
+    else if (totalScore >= 140) title = typeof t === 'function'? t('rank_metropolis'): 'Metropolis Terencana';
+    else if (totalScore >= 100) title = typeof t === 'function'? t('rank_satellite'): 'Kota Satelit Mandiri';
+    else if (totalScore >= 60) title = typeof t === 'function'? t('rank_developing'): 'Kota Berkembang';
 
     cityTitleEl.innerText = title;
-    cityTitleEl.style.color = "#facc15";
+    cityTitleEl.style.color = '#facc15';
+
+    const lbTitle = typeof t === 'function'? t('lb_record_title'): '🏆 Catat Rekor ke Papan Peringkat';
+    const lbPlaceholder = typeof t === 'function'? t('lb_name_placeholder'): 'Nama walikota (maks 15 huruf)...';
+    const lbBtn = typeof t === 'function'? t('lb_btn_submit'): 'Kirim';
 
     lbSection.innerHTML = `
       <div class="lb-submit-section">
-        <div class="lb-submit-title">🏆 Catat Rekor ke Papan Peringkat</div>
+        <div class="lb-submit-title">${lbTitle}</div>
         <form class="lb-submit-form" onsubmit="submitLeaderboardScore(event, ${totalScore}, ${leftScore}, ${centerScore}, ${rightScore})">
-          <input type="text" id="lb-player-name" class="lb-name-input" placeholder="Nama walikota (maks 15 huruf)..." maxlength="15" required autocomplete="off">
-          <button type="submit" id="lb-submit-btn" class="lb-btn-send">Kirim</button>
+          <input type="text" id="lb-player-name" class="lb-name-input" placeholder="${lbPlaceholder}" maxlength="15" required autocomplete="off">
+          <button type="submit" id="lb-submit-btn" class="lb-btn-send">${lbBtn}</button>
         </form>
         <div id="lb-submit-status" class="lb-submit-msg" style="display:none;"></div>
       </div>
@@ -859,5 +902,9 @@ function restartGame() {
 }
 
 window.onload = () => {
-  initGame();
+  if (typeof initI18n === 'function') {
+    initI18n();
+  } else {
+    initGame();
+  }
 };

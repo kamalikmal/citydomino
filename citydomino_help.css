@@ -269,3 +269,29 @@
 .rules-list li {
   margin-left: 14px;
 }
+/* Batas tinggi dan scroll untuk Tab Full Rules */
+#pane-rules {
+  max-height: 65vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-right: 6px;
+  -webkit-overflow-scrolling: touch;
+}
+
+#pane-rules::-webkit-scrollbar {
+  width: 5px;
+}
+
+#pane-rules::-webkit-scrollbar-track {
+  background: #090d16;
+  border-radius: 4px;
+}
+
+#pane-rules::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+
+#pane-rules::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}

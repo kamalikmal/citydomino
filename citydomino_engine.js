@@ -1,5 +1,6 @@
 /* =============================================================
    CITY DOMINO - ENGINE & LOGIKA ATURAN PERMAINAN
+   Terintegrasi dengan citydomino_i18n.js
    ============================================================= */
 
 function getCurrentRouteKeys() {
@@ -9,9 +10,13 @@ function getCurrentRouteKeys() {
 }
 
 function getCurrentRouteLabels() {
+  const west = typeof t === 'function'? t('district_westfall'): 'Westfall';
+  const east = typeof t === 'function'? t('district_eastgate'): 'Eastgate';
+  const mid = typeof t === 'function'? t('district_midvale'): 'Midvale';
+
   return (state.round % 2 === 1)
-? ['1.Westfall', '2.Eastgate', '3.Midvale']
-: ['1.Eastgate', '2.Westfall', '3.Midvale'];
+? [`1.${west}`, `2.${east}`, `3.${mid}`]
+: [`1.${east}`, `2.${west}`, `3.${mid}`];
 }
 
 function buildDeck() {
@@ -111,7 +116,7 @@ function evaluateLine(cells) {
   const isTargetBonus = (c) => (c.val === wildCard.botVal && c.col === wildCard.botCol);
 
   let bestScore = 0;
-  let bestComboName = "Nihil";
+  let bestComboName = typeof t === 'function'? t('combo_none'): 'Nihil';
 
   for (const comboId of state.policy.active) {
     const match = checkCombo(cells, comboId);
@@ -156,14 +161,19 @@ function evaluateDistrictHappiness(poolCards, poolKey) {
   if (hasEco) happyScore += 25;
   if (hasFav) happyScore += 25;
 
+  const nameRth = typeof t === 'function'? t('pillar_ecology'): 'Ekologi (0, 1, 6)';
+  const nameSrv = typeof t === 'function'? t('pillar_residential'): 'Hunian (0, 3, 4)';
+  const nameEco = typeof t === 'function'? t('pillar_business'): 'Bisnis (2, 5, 6)';
+  const nameFav = typeof t === 'function'? t('pillar_trademark', { val: favVal }): `Trademark (${favVal})`;
+
   return {
     happyScore,
     isHappy: happyScore === 100,
     reqs: [
-      { name: 'Ekologi (0, 1, 6)', cur: rthCount, target: 10, ok: hasRth },
-      { name: 'Hunian (0, 3, 4)', cur: srvCount, target: 10, ok: hasSrv },
-      { name: 'Bisnis (2, 5, 6)', cur: ecoCount, target: 10, ok: hasEco },
-      { name: `Trademark (${favVal})`, cur: favCount, target: 6, ok: hasFav }
+      { name: nameRth, cur: rthCount, target: 10, ok: hasRth },
+      { name: nameSrv, cur: srvCount, target: 10, ok: hasSrv },
+      { name: nameEco, cur: ecoCount, target: 10, ok: hasEco },
+      { name: nameFav, cur: favCount, target: 6, ok: hasFav }
     ]
   };
 }

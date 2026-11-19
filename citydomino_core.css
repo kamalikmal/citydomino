@@ -110,7 +110,6 @@ body {
 .homescreen-bg {
   position: absolute;
   inset: 0;
-  /* Ganti URL gambar di bawah sesuai nama berkas gambarmu */
   background: url('assets/homescreen.png') center center / cover no-repeat;
   transform: scale(1.02);
 }
@@ -189,7 +188,7 @@ body {
   justify-content: flex-end;
 }
 
-/* Gaya Tombol */
+/* Gaya Tombol Homescreen */
 .btn-homescreen {
   cursor: pointer;
   border: none;
@@ -205,7 +204,7 @@ body {
   transform: translateY(4px);
 }
 
-/* Tombol Mulai Main (Tengah & Menonjol) */
+/* Tombol Mulai Main */
 .btn-main-play {
   padding: 16px 52px;
   font-size: clamp(1.1rem, 2.2vw, 1.35rem);
@@ -224,7 +223,7 @@ body {
   box-shadow: 0 2px 0 #a16207, 0 4px 10px rgba(0, 0, 0, 0.35);
 }
 
-/* Tombol Tutorial*/
+/* Tombol Tutorial */
 .btn-sub-tutorial {
   padding: 10px 32px;
   font-size: clamp(0.85rem, 1.5vw, 1rem);
@@ -243,7 +242,67 @@ body {
   box-shadow: 0 1px 0 #1e3a8a, 0 3px 8px rgba(0, 0, 0, 0.3);
 }
 
-/* 1. HEADER TERPADU */
+/* ==========================================================================
+   TOMBOL SWITCH BAHASA (HOMESCREEN & GAME HEADER)
+   ========================================================================== */
+.homescreen-lang-pill,
+.header-lang-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: #090d16;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  padding: 2px 4px;
+  border-radius: 9999px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.homescreen-lang-pill {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  z-index: 25;
+}
+
+.hs-lang-btn,
+.hdr-lang-btn {
+  background: transparent;
+  border: none;
+  color: #64748b;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  transition: all 0.2s ease;
+}
+
+.hs-lang-btn:hover:not(.active),
+.hdr-lang-btn:hover:not(.active) {
+  color: #cbd5e1;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.hs-lang-btn.active,
+.hdr-lang-btn.active {
+  color: #031124;
+  background: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.75);
+  cursor: default;
+}
+
+.hs-lang-divider,
+.hdr-lang-divider {
+  color: #334155;
+  font-size: 0.7rem;
+  user-select: none;
+}
+
+/* ==========================================================================
+   1. HEADER TERPADU
+   ========================================================================== */
 .main-header {
   width: 100%;
   max-width: 1240px;
@@ -353,7 +412,9 @@ body {
   background: #241a05;
 }
 
-/* 2. GRID UTAMA & PANEL DISTRIK */
+/* ==========================================================================
+   2. GRID UTAMA & PANEL DISTRIK
+   ========================================================================== */
 .main-game-grid {
   width: 100%;
   max-width: 1240px;
@@ -542,7 +603,9 @@ body {
   flex-shrink: 0;
 }
 
-/* 3. KOMPONEN DOMINO */
+/* ==========================================================================
+   3. KOMPONEN DOMINO
+   ========================================================================== */
 .domino {
   width: 42px;
   height: 92px;
@@ -640,7 +703,9 @@ body {
   filter: brightness(1.25);
 }
 
-/* 4. KOTAK BAWAH (ARSIP, TANGAN, & MASTER PLAN) */
+/* ==========================================================================
+   4. KOTAK BAWAH (ARSIP, TANGAN, & MASTER PLAN)
+   ========================================================================== */
 .box-bottom {
   min-height: 180px;
   max-height: 195px;
@@ -1074,4 +1139,85 @@ body {
 @keyframes pulse-danger {
   0%, 100% { opacity: 1; border-color: #dc2626; }
   50% { opacity: 0.55; border-color: #ef4444; }
+}
+/* ==========================================================================
+   TOMBOL PENGGANTI BAHASA (OPSI A: HOMESCREEN & HEADER)
+   ========================================================================== */
+.homescreen-lang-toggle {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  z-index: 50;
+}
+
+.btn-lang-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 12px;
+  background: rgba(9, 13, 22, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.78rem;
+  font-weight: 800;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.btn-lang-switch:hover {
+  border-color: #38bdf8;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+}
+
+/* Kode Bahasa di Tombol Homescreen */
+.btn-lang-switch .lang-code {
+  color: #64748b;
+  padding: 2px 6px;
+  border-radius: 999px;
+  transition: all 0.2s ease;
+}
+
+/* Tampilan Status Aktif (Menyala Terang) */
+.btn-lang-switch .lang-code.active {
+  color: #031124;
+  background: #38bdf8;
+  box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+}
+
+.btn-lang-switch .lang-divider {
+  color: #334155;
+  font-size: 0.7rem;
+}
+
+/* Tombol Bahasa di Header Permainan */
+.btn-lang-header {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 8px;
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  color: #cbd5e1;
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-lang-header:hover {
+  background: #334155;
+  border-color: #38bdf8;
+  color: #ffffff;
+}
+
+.btn-lang-header .lang-curr {
+  color: #38bdf8;
+  font-weight: 900;
+  text-shadow: 0 0 6px rgba(56, 189, 248, 0.5);
 }

@@ -1,20 +1,20 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>City Domino</title>
+  <title>City Domino - Urban Poker Planner</title>
   <!-- Tag Link CSS pada <head> -->
-  <link rel="stylesheet" href="citydomino_core.css?v=2">
+  <link rel="stylesheet" href="citydomino_core.css?v=6">
   <link rel="stylesheet" href="citydomino_overlays.css?v=2">
-  <link rel="stylesheet" href="citydomino_help.css?v=1">
+  <link rel="stylesheet" href="citydomino_help.css?v=2">
   <link rel="stylesheet" href="citydomino_tutorial.css?v=20">
 </head>
 <body>
   <!-- LAYER 1: Peringatan Rotasi Layar HP (Hanya muncul jika posisi potret) -->
   <div id="orientation-warning">
     <div class="rotate-phone-icon">🔄📱</div>
-    <p class="rotate-text">Putar ponsel ke posisi lanskap untuk bermain</p>
+    <p class="rotate-text" data-i18n="rotate_warning">Putar ponsel ke posisi lanskap untuk bermain</p>
   </div>
 
   <!-- LAYER 2: Homescreen Penuh -->
@@ -22,19 +22,28 @@
     <div class="homescreen-bg"></div>
     <div class="homescreen-bottom-vignette"></div>
 
+    <!-- Tombol Pergantian Bahasa di Atas Kanan Homescreen -->
+    <div class="homescreen-lang-toggle">
+      <button type="button" class="btn-lang-switch" id="btn-lang-homescreen" onclick="toggleLanguage()" title="Switch Language / Ganti Bahasa">
+        <span class="lang-code lang-en" id="hs-lang-en">EN</span>
+        <span class="lang-divider">/</span>
+        <span class="lang-code lang-id" id="hs-lang-id">ID</span>
+      </button>
+    </div>
+
     <div class="homescreen-ui">
       <!-- Judul Game -->
       <header class="homescreen-header">
         <h1 class="game-logo-title">CITY DOMINO</h1>
-        <p class="game-logo-tagline">Urban Poker Planner</p>
+        <p class="game-logo-tagline" data-i18n="app_tagline">Urban Poker Planner</p>
       </header>
 
       <!-- Tombol Bagian Bawah -->
       <footer class="homescreen-actions">
-        <button id="btn-start-game" class="btn-homescreen btn-main-play">
-          MULAI MAIN
+        <button id="btn-start-game" class="btn-homescreen btn-main-play" data-i18n="btn_play">
+          PLAY GAME
         </button>
-        <button id="btn-open-tutorial" class="btn-homescreen btn-sub-tutorial">
+        <button id="btn-open-tutorial" class="btn-homescreen btn-sub-tutorial" data-i18n="btn_tutorial">
           TUTORIAL
         </button>
       </footer>
@@ -57,60 +66,60 @@
     <!-- Kotak Balon Dialog Petunjuk -->
     <div id="tutorial-dialog" class="tutorial-dialog">
       <div class="tutorial-dialog-header">
-        <span id="tutorial-step-badge" class="tutorial-step-badge">Langkah 1/15</span>
-        <button id="btn-skip-tutorial" class="btn-skip-tutorial" type="button" title="Lewati Tutorial">Lewati ✕</button>
+        <span id="tutorial-step-badge" class="tutorial-step-badge">Step 1/24</span>
+        <button id="btn-skip-tutorial" class="btn-skip-tutorial" type="button" title="Skip Tutorial" data-i18n="tut_skip">Skip ✕</button>
       </div>
-      <p id="tutorial-dialog-text" class="tutorial-dialog-text">Memuat panduan...</p>
+      <p id="tutorial-dialog-text" class="tutorial-dialog-text">Loading instructions...</p>
       <div id="tutorial-dialog-actions" class="tutorial-dialog-actions">
-        <button id="btn-tutorial-next" class="btn-tutorial-action hidden" type="button">Lanjut</button>
+        <button id="btn-tutorial-next" class="btn-tutorial-action hidden" type="button" data-i18n="tut_next">Next</button>
       </div>
     </div>
 
     <!-- Modal Evaluasi Selesai Tutorial -->
     <div id="tutorial-finish-modal" class="tutorial-finish-modal hidden">
       <div class="tutorial-finish-card">
-        <div class="tutorial-finish-badge">LATIHAN SELESAI</div>
-        <h2 class="tutorial-finish-title">Ronde Dummy Tuntas!</h2>
+        <div class="tutorial-finish-badge" data-i18n="tut_fin_badge">PRACTICE COMPLETED</div>
+        <h2 class="tutorial-finish-title" data-i18n="tut_fin_title">Dummy Phase Finished!</h2>
         <div class="tutorial-finish-summary">
           <div class="summary-row">
-            <span>Westfall (Ekologi):</span>
-            <strong class="text-green">Three of a Kind + Warga Senang</strong>
+            <span data-i18n="tut_fin_row_wf">Westfall (Ecology):</span>
+            <strong class="text-green" data-i18n="tut_fin_row_wf_val">Five of a Kind + Happy Citizens</strong>
           </div>
           <div class="summary-row">
-            <span>Eastgate (Bisnis):</span>
-            <strong class="text-green">Two Pair + Warga Senang</strong>
+            <span data-i18n="tut_fin_row_eg">Eastgate (Business):</span>
+            <strong class="text-green" data-i18n="tut_fin_row_eg_val">Full House + Happy Citizens</strong>
           </div>
           <div class="summary-row">
-            <span>Midvale (Hunian):</span>
-            <strong class="text-green">Full Set + Warga Senang</strong>
+            <span data-i18n="tut_fin_row_mv">Midvale (Residential):</span>
+            <strong class="text-green" data-i18n="tut_fin_row_mv_val">Double Combo + Happy Citizens</strong>
           </div>
           <div class="summary-row">
-            <span>Fitur Tukar Deck:</span>
-            <strong class="text-blue">Berhasil Diuji</strong>
+            <span data-i18n="tut_fin_row_deck">Partner Exchange:</span>
+            <strong class="text-blue" data-i18n="tut_fin_row_deck_val">Successfully Tested</strong>
           </div>
           <div class="summary-divider"></div>
           <div class="summary-row total-row">
-            <span>Simulasi Skor:</span>
-            <span class="tutorial-score-val">480 Poin</span>
+            <span data-i18n="tut_fin_score_sim">Simulated Score:</span>
+            <span class="tutorial-score-val">0 Points</span>
           </div>
         </div>
-        <p class="tutorial-finish-desc">
-          Kamu telah menguasai cara membaca aspirasi warga, menyusun kombinasi poker, hingga menukar kartu di akhir ronde.
+        <p class="tutorial-finish-desc" data-i18n="tut_fin_desc">
+          You have mastered citizen aspirations, poker combo building, and partner exchange swaps.
         </p>
-        <button id="btn-tutorial-start-real" class="btn-tutorial-start-real" type="button">Mulai Main Sesungguhnya</button>
+        <button id="btn-tutorial-start-real" class="btn-tutorial-start-real" type="button" data-i18n="tut_fin_btn_start">Start Real Game</button>
       </div>
     </div>
   </div>
 
-  <!-- 1. Header Terpadu: Judul (Kiri), Pembangunan Dinamis (Tengah), Status Ronde (Kanan) -->
+  <!-- 1. Header Terpadu: Judul & Bahasa (Kiri), Pembangunan Dinamis (Tengah), Status Fase (Kanan) -->
   <header class="main-header">
     <div class="header-left">
       <h1 class="game-title">City Domino</h1>
-      <button class="btn-help-mini" onclick="openHelpModal()">❓ Bantuan</button>
+      <button class="btn-help-mini" onclick="openHelpModal()"><span data-i18n="btn_help">❓ Help</span></button>
     </div>
     <div class="route-center" id="route-container"></div>
     <div class="stats-right">
-      <div class="badge glow" id="round-indicator">Ronde 1/6</div>
+      <div class="badge glow" id="round-indicator">Phase 1/6</div>
     </div>
   </header>
 
@@ -121,11 +130,11 @@
       <div class="pool-header">
         <span class="pool-name">
           Westfall
-          <span class="pool-badge-active">AKTIF</span>
+          <span class="pool-badge-active" data-i18n="badge_active">ACTIVE</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-left" onclick="toggleDistrictAspiration(event, 'left')">😊 100%</span>
-          <span class="pool-score" id="score-left" onclick="toggleDistrictScoreBalloon(event, 'left')" title="Klik untuk rincian skor">0 poin</span>
+          <span class="pool-score" id="score-left" onclick="toggleDistrictScoreBalloon(event, 'left')" title="Click for score breakdown">0 pts</span>
         </div>
       </div>
       <div id="grid-left" class="pool-grid-wrapper"></div>
@@ -136,11 +145,11 @@
       <div class="pool-header">
         <span class="pool-name">
           Midvale
-          <span class="pool-badge-active">AKTIF</span>
+          <span class="pool-badge-active" data-i18n="badge_active">ACTIVE</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-center" onclick="toggleDistrictAspiration(event, 'center')">😊 100%</span>
-          <span class="pool-score" id="score-center" onclick="toggleDistrictScoreBalloon(event, 'center')" title="Klik untuk rincian skor">0 poin</span>
+          <span class="pool-score" id="score-center" onclick="toggleDistrictScoreBalloon(event, 'center')" title="Click for score breakdown">0 pts</span>
         </div>
       </div>
       <div id="grid-center" class="pool-grid-wrapper"></div>
@@ -151,11 +160,11 @@
       <div class="pool-header">
         <span class="pool-name">
           Eastgate
-          <span class="pool-badge-active">AKTIF</span>
+          <span class="pool-badge-active" data-i18n="badge_active">ACTIVE</span>
         </span>
         <div class="pool-header-actions">
           <span class="district-happy-badge happy-safe" id="happy-right" onclick="toggleDistrictAspiration(event, 'right')">😊 100%</span>
-          <span class="pool-score" id="score-right" onclick="toggleDistrictScoreBalloon(event, 'right')" title="Klik untuk rincian skor">0 poin</span>
+          <span class="pool-score" id="score-right" onclick="toggleDistrictScoreBalloon(event, 'right')" title="Click for score breakdown">0 pts</span>
         </div>
       </div>
       <div id="grid-right" class="pool-grid-wrapper"></div>
@@ -165,8 +174,8 @@
     <div class="box-panel box-bottom master-plan-box">
       <div class="mp-header-bar">
         <div class="mp-tabs-nav">
-          <button class="mp-tab-btn active" id="tab-btn-mp" onclick="switchMpTab('cards')">Master Plan</button>
-          <button class="mp-tab-btn" id="tab-btn-lb" onclick="switchMpTab('lb')">Top 5</button>
+          <button class="mp-tab-btn active" id="tab-btn-mp" onclick="switchMpTab('cards')" data-i18n="tab_mp">Master Plan</button>
+          <button class="mp-tab-btn" id="tab-btn-lb" onclick="switchMpTab('lb')" data-i18n="tab_top5">Top 5</button>
         </div>
         <span class="mp-active-plan-badge" id="policy-name">-</span>
       </div>
@@ -175,7 +184,7 @@
       </div>
       <div class="mp-pane" id="pane-mp-lb">
         <div class="leaderboard-view" id="lb-view-container">
-          <div class="lb-state-text">Memuat peringkat...</div>
+          <div class="lb-state-text" data-i18n="lb_loading">Loading ranks...</div>
         </div>
       </div>
     </div>
@@ -183,35 +192,35 @@
     <!-- KOTAK 5: Tangan Pemain & Komando Aksi -->
     <div class="box-panel box-bottom hand-panel-box" id="hand-panel">
       <div class="hand-header-bar">
-        <span>Kontraktor</span>
-        <span class="hand-hint">💡 Double Klik atau 🔄 untuk putar</span>
+        <span data-i18n="lbl_contractor">Contractor</span>
+        <span class="hand-hint" data-i18n="hand_hint">💡 Double click or 🔄 to rotate</span>
       </div>
-      <div class="timer-alert" id="timer-alert-box">
-        ⚠️ <b>Akhir Ronde:</b> Pilih 1 kartu Kontraktor untuk ditukar dengan Deck.
+      <div class="timer-alert" id="timer-alert-box" data-i18n="alert_phase_end">
+        ⚠️ <b>Phase End:</b> Select 1 Contractor tile to swap with Partner Exchange.
       </div>
       <div class="hand-cards-row" id="hand-cards-container"></div>
       <div class="actions-bar">
-        <button class="btn-undo" id="btn-undo" disabled onclick="undoAction()">↩ Undo</button>
-        <button class="btn-main" id="btn-action" disabled onclick="executeAction()">Tukar Kartu</button>
+        <button class="btn-undo" id="btn-undo" disabled onclick="undoAction()"><span data-i18n="btn_undo">↩ Undo</span></button>
+        <button class="btn-main" id="btn-action" disabled onclick="executeAction()"><span data-i18n="btn_swap">Swap Tile</span></button>
       </div>
     </div>
 
-    <!-- KOTAK 6: Arsip Khusus & Deck Ronde -->
+    <!-- KOTAK 6: Arsip Khusus & Bursa Rekanan -->
     <div class="box-panel box-bottom special-timer-panel">
       <div class="panel-header-simple">
-        <span>Bursa Rekanan & Regulasi</span>
+        <span data-i18n="lbl_market_reg">Partner Exchange & Regulation</span>
       </div>
       <div class="special-section">
         <div id="special-card-render"></div>
         <div class="special-text">
-          <div>⭐ <b>Atas (Angka Bebas):</b> Klik petak ⭐ untuk ubah angka (0–6)</div><br>
-          <div><a style='color: #38bdf8;'>+3</a> <b>Bawah (Bonus +3):</b> Bonus poin pada baris sah.</div>
+          <div data-i18n="special_top_hint">⭐ <b>Top (Wild Number):</b> Click ⭐ tile to change number (0–6)</div><br>
+          <div data-i18n="special_bot_hint"><a style='color: #38bdf8;'>+3</a> <b>Bottom (+3 Bonus):</b> Bonus points on valid lines.</div>
         </div>
       </div>
       <div class="timer-section">
         <div class="timer-header-row">
-          <span>Bursa Rekanan</span>
-          <span id="timer-slots-label">5/5 Tersedia</span>
+          <span data-i18n="lbl_market_short">Partner Exchange</span>
+          <span id="timer-slots-label">5/5 Available</span>
         </div>
         <div class="timer-cards-track" id="timer-slots-container"></div>
       </div>
@@ -220,13 +229,13 @@
 
   <!-- Balon Popover Aspirasi Warga Distrik -->
   <div class="district-aspiration-balloon" id="aspiration-balloon">
-    <div class="aspirasi-header" id="aspirasi-title">Aspirasi Warga</div>
+    <div class="aspirasi-header" id="aspirasi-title">Citizen Aspirations</div>
     <div class="aspirasi-content" id="aspirasi-content"></div>
   </div>
 
   <!-- Balon Popover Kalkulasi Skor Distrik -->
   <div class="district-score-balloon" id="score-balloon">
-    <div class="score-balloon-header" id="score-balloon-title">Kalkulasi Skor</div>
+    <div class="score-balloon-header" id="score-balloon-title">Score Calculation</div>
     <div class="score-balloon-content" id="score-balloon-content"></div>
   </div>
 
@@ -242,124 +251,124 @@
   <!-- Modal Picker Angka Wild (0–6) -->
   <div class="modal-overlay" id="wild-modal">
     <div class="wild-picker-box">
-      <div class="wild-picker-title">PILIH ANGKA WILD</div>
-      <div style="font-size:0.68rem; color:var(--text-muted); margin-bottom:4px;">Warna petak tidak berubah.</div>
+      <div class="wild-picker-title" data-i18n="wild_picker_title">SELECT WILD NUMBER</div>
+      <div style="font-size:0.68rem; color:var(--text-muted); margin-bottom:4px;" data-i18n="wild_picker_subtitle">Tile color remains unchanged.</div>
       <div class="wild-picker-options" id="wild-picker-options"></div>
-      <button class="btn-undo" style="width: 100%;" onclick="closeWildPicker()">Tutup</button>
+      <button class="btn-undo" style="width: 100%;" onclick="closeWildPicker()" data-i18n="btn_close">Close</button>
     </div>
   </div>
 
   <!-- Modal Evaluasi Akhir -->
   <div class="modal-overlay" id="end-modal">
     <div class="modal-card">
-      <div class="modal-title" id="final-modal-title">EVALUASI AKHIR KOTA</div>
-      <div id="final-modal-desc" style="font-size:0.8rem; color:var(--text-muted);">
-        Semua 6 ronde (18 aksi) selesai. Berikut rincian capaian kotamu:
+      <div class="modal-title" id="final-modal-title" data-i18n="final_modal_title">FINAL CITY EVALUATION</div>
+      <div id="final-modal-desc" style="font-size:0.8rem; color:var(--text-muted);" data-i18n="final_modal_desc">
+        All 6 phases (18 actions) completed. Here is your city summary:
       </div>
       <div style="background:#090d16; border:1px solid #1e293b; border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:6px;">
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
           <span>Westfall:</span>
           <div>
             <span id="final-left-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-left-pts" style="color:var(--highlight);">0 poin</b>
+            <b id="final-left-pts" style="color:var(--highlight);">0 pts</b>
           </div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
           <span>Midvale:</span>
           <div>
             <span id="final-center-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-center-pts" style="color:var(--highlight);">0 poin</b>
+            <b id="final-center-pts" style="color:var(--highlight);">0 pts</b>
           </div>
         </div>
         <div style="display:flex; justify-content:space-between; align-items:center; font-size:0.75rem;">
           <span>Eastgate:</span>
           <div>
             <span id="final-right-happy" style="margin-right:8px; font-weight:800;">-</span>
-            <b id="final-right-pts" style="color:var(--highlight);">0 poin</b>
+            <b id="final-right-pts" style="color:var(--highlight);">0 pts</b>
           </div>
         </div>
         <div style="border-top:1px solid #1e293b; margin-top:4px; padding-top:6px; display:flex; justify-content:space-between; font-size:0.9rem;">
-          <b>SKOR AKHIR:</b>
-          <b id="final-total-pts" style="color:#38bdf8;">0 poin</b>
+          <b data-i18n="final_score_label">FINAL SCORE:</b>
+          <b id="final-total-pts" style="color:#38bdf8;">0 pts</b>
         </div>
       </div>
       <div id="city-title-box" style="text-align:center; padding:8px; background:#1e293b; border-radius:6px;">
-        <span id="city-status-label" style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;">Predikat Kota:</span>
-        <div id="city-title" style="font-size:1rem; font-weight:900; color:#facc15; margin-top:2px;">Metropolis Terencana</div>
+        <span id="city-status-label" style="font-size:0.65rem; color:var(--text-muted); text-transform:uppercase;" data-i18n="city_status_label">City Title:</span>
+        <div id="city-title" style="font-size:1rem; font-weight:900; color:#facc15; margin-top:2px;">Planned Metropolis</div>
       </div>
 
       <!-- Blok Catat Rekor Leaderboard -->
       <div id="lb-submit-container"></div>
 
-      <button class="btn-main" style="width:100%;" onclick="restartGame()">Mulai Sesi Baru</button>
+      <button class="btn-main" style="width:100%;" onclick="restartGame()" data-i18n="btn_new_session">Start New Session</button>
     </div>
   </div>
 
-  <!-- Modal Tutorial Aturan & Latihan Interaktif -->
+  <!-- Modal Tutorial Aturan & Latihan Cepat -->
   <div class="modal-overlay" id="help-modal">
     <div class="modal-card modal-help-card">
       <div class="modal-help-header">
         <div class="help-nav-tabs">
-          <button class="help-tab-btn active" id="tab-btn-tut" onclick="switchHelpTab('tutorial')">🎮 Latihan Cepat</button>
-          <button class="help-tab-btn" id="tab-btn-rules" onclick="switchHelpTab('rules')">📖 Aturan Lengkap</button>
+          <button class="help-tab-btn active" id="tab-btn-tut" onclick="switchHelpTab('tutorial')" data-i18n="help_tab_quick">🎮 Quick Practice</button>
+          <button class="help-tab-btn" id="tab-btn-rules" onclick="switchHelpTab('rules')" data-i18n="help_tab_rules">📖 Full Rules</button>
         </div>
-        <button class="btn-help-mini" onclick="closeHelpModal()">✕ Tutup</button>
+        <button class="btn-help-mini" onclick="closeHelpModal()"><span data-i18n="btn_close_x">✕ Close</span></button>
       </div>
 
-      <!-- Tab 1: Latihan Interaktif -->
+      <!-- Tab 1: Latihan Sandbox -->
       <div class="help-tab-pane active" id="pane-tutorial">
         <div class="tut-stepper">
-          <div class="tut-step-dot active" id="tut-dot-1" onclick="loadTutStep(1)">1. Premis & Layar</div>
-          <div class="tut-step-dot" id="tut-dot-2" onclick="loadTutStep(2)">2. Poker & Tukar</div>
-          <div class="tut-step-dot" id="tut-dot-3" onclick="loadTutStep(3)">3. Putar & Warga</div>
-          <div class="tut-step-dot" id="tut-dot-4" onclick="loadTutStep(4)">4. Wild ⭐</div>
+          <div class="tut-step-dot active" id="tut-dot-1" onclick="loadTutStep(1)" data-i18n="help_step1_dot">1. Premise & UI</div>
+          <div class="tut-step-dot" id="tut-dot-2" onclick="loadTutStep(2)" data-i18n="help_step2_dot">2. Poker & Swap</div>
+          <div class="tut-step-dot" id="tut-dot-3" onclick="loadTutStep(3)" data-i18n="help_step3_dot">3. Rotate & Citizens</div>
+          <div class="tut-step-dot" id="tut-dot-4" onclick="loadTutStep(4)" data-i18n="help_step4_dot">4. Wild ⭐</div>
         </div>
 
         <div class="tut-instruction-card">
-          <div class="tut-instruction-title" id="tut-title">Langkah 1: Premis & Antarmuka Kota</div>
+          <div class="tut-instruction-title" id="tut-title">Step 1: Premise & City Interface</div>
           <div class="tut-instruction-desc" id="tut-desc">
-            Kamu adalah Walikota yang merancang 3 distrik selama 6 ronde (total 18 aksi). Angka domino (0–6) mewakili zonasi kota. Capai target skor Master Plan tertinggi dan jaga <b>Kebahagiaan Warga minimal 50%</b> agar kota tidak kolaps!
+            You are the Mayor designing 3 districts over 6 phases (18 total actions). Domino numbers (0–6) represent city zoning. Reach target poker scores and maintain <b>Citizen Happiness at ≥50%</b> to prevent collapse!
           </div>
         </div>
 
         <!-- Wadah Khusus Langkah 1: Miniatur Anatomi Grid 3x2 -->
         <div class="tut-sandbox-box" id="tut-overview-container">
           <div class="tut-overview-container">
-            <div class="tut-premis-card">
-              <b>Tujuan Utama:</b> Susun kombinasi Sesuai Master Plan di 3 distrik kota sambil menyeimbangkan kebutuhan fasilitas publik warga.
+            <div class="tut-premis-card" data-i18n="help_premise_goal">
+              <b>Main Goal:</b> Build Master Plan combinations in 3 city districts while balancing civic public zoning.
             </div>
             <div class="tut-wf-wrap">
-              <div class="tut-wf-header">HEADER: RUTE AKTIF (Urutan distrik yang dibangun pada ronde berjalan)</div>
+              <div class="tut-wf-header" data-i18n="help_wf_header">HEADER: ACTIVE ROUTE (District order built during current phase)</div>
               <div class="tut-wf-grid">
                 <div class="tut-wf-cell cell-district">
                   <span class="tut-wf-title">Westfall</span>
-                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_15">15 Dominoes (3 rows)</span>
                 </div>
                 <div class="tut-wf-cell cell-district">
                   <span class="tut-wf-title">Midvale</span>
-                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_15">15 Dominoes (3 rows)</span>
                 </div>
                 <div class="tut-wf-cell cell-district">
                   <span class="tut-wf-title">Eastgate</span>
-                  <span class="tut-wf-sub">15 Domino (3 baris)</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_15">15 Dominoes (3 rows)</span>
                 </div>
                 <div class="tut-wf-cell">
                   <span class="tut-wf-title">Master Plan</span>
-                  <span class="tut-wf-sub">Target Poin Kota</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_mp">Target Points</span>
                 </div>
                 <div class="tut-wf-cell">
-                  <span class="tut-wf-title">Tangan Pemain</span>
-                  <span class="tut-wf-sub">5 Kartu (Aksi Tukar/Putar)</span>
+                  <span class="tut-wf-title" data-i18n="lbl_contractor">Contractor</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_hand">5 Tiles (Swap/Rotate)</span>
                 </div>
                 <div class="tut-wf-cell">
-                  <span class="tut-wf-title">Khusus & Deck</span>
-                  <span class="tut-wf-sub">Wild ⭐ & Sisa Deck</span>
+                  <span class="tut-wf-title" data-i18n="lbl_market_short">Partner Exchange</span>
+                  <span class="tut-wf-sub" data-i18n="help_wf_sub_spec">Wild ⭐ & Market Deck</span>
                 </div>
               </div>
             </div>
           </div>
           <div class="actions-bar tut-action-bar">
-            <button class="btn-main" onclick="loadTutStep(2)">Mulai Latihan Praktik ➔</button>
+            <button class="btn-main" onclick="loadTutStep(2)" data-i18n="help_btn_start_practice">Start Practice ➔</button>
           </div>
         </div>
 
@@ -367,10 +376,10 @@
         <div class="tut-sandbox-box" id="tut-district-box" style="display:none;">
           <div class="tut-sublabel-row">
             <div style="display:flex; align-items:center; gap:6px;">
-              <span>Simulasi Distrik:</span>
-              <span class="district-happy-badge happy-danger" id="tut-happy-badge">⚠️ 25% (Butuh 1)</span>
+              <span data-i18n="help_lbl_sim_district">District Simulation:</span>
+              <span class="district-happy-badge happy-danger" id="tut-happy-badge">⚠️ 25% (Needs 1)</span>
             </div>
-            <span id="tut-district-status" style="color:var(--highlight); font-weight:800;">Target: Five of a Kind (+30 poin)</span>
+            <span id="tut-district-status" style="color:var(--highlight); font-weight:800;">Target: Five of a Kind (+30 pts)</span>
           </div>
           <div class="tut-district-row" id="tut-district-row"></div>
         </div>
@@ -378,52 +387,35 @@
         <!-- Sandbox Kartu Tangan & Aksi (Langkah 2, 3) -->
         <div class="tut-sandbox-box" id="tut-hand-box" style="display:none;">
           <div class="tut-sublabel-row">
-            <span>Kartu di Tangan:</span>
-            <span style="font-size:0.6rem; color:var(--text-muted);">Double klik atau 🔄 untuk putar</span>
+            <span data-i18n="help_lbl_hand_cards">Contractor Hand:</span>
+            <span style="font-size:0.6rem; color:var(--text-muted);" data-i18n="hand_hint">Double click or 🔄 to rotate</span>
           </div>
           <div class="tut-hand-row" id="tut-hand-row"></div>
           <div class="actions-bar tut-action-bar">
-            <button class="btn-undo" onclick="resetTutStep()">↺ Ulangi</button>
-            <button class="btn-main" id="btn-tut-action" disabled onclick="executeTutAction()">Tukar Kartu</button>
+            <button class="btn-undo" onclick="resetTutStep()" data-i18n="btn_repeat">↺ Reset</button>
+            <button class="btn-main" id="btn-tut-action" disabled onclick="executeTutAction()" data-i18n="btn_swap">Swap Tile</button>
           </div>
         </div>
 
         <!-- Umpan Balik Selesai -->
         <div class="tut-feedback-card" id="tut-feedback" style="display:none;">
-          <div class="tut-feedback-msg" id="tut-feedback-text">Bagus sekali!</div>
-          <button class="btn-tut-advance" id="btn-tut-next" onclick="nextTutStep()">Lanjut ➔</button>
+          <div class="tut-feedback-msg" id="tut-feedback-text">Great job!</div>
+          <button class="btn-tut-advance" id="btn-tut-next" onclick="nextTutStep()" data-i18n="tut_next">Next ➔</button>
         </div>
       </div>
 
       <!-- Tab 2: Teks Aturan Lengkap -->
       <div class="help-tab-pane" id="pane-rules">
-        <ul class="rules-list">
-          <li><b>Tujuan:</b> Susun poker angka/warna bernilai tertinggi di 3 distrik kota sambil menjaga tingkat kepuasan warga (Happiness) minimal 50%.</li>
-          <li><b>Skala Bangunan:</b> Tiap angka domino merepresentasikan zonasi tata kota: 0 = Taman Kota/Pohon, 1 = Rumah Tapak, 2 = Ruko Komersial, 3 = Fasilitas Publik, 4 = Apartemen Blok, 5 = Menara Pencakar Langit, 6 = Mega Landmark Kota.</li>
-          <li><b>Keseimbangan Distrik (Happiness):</b> Dihitung langsung per distrik (total 30 petak zonasi). Tiap distrik menuntut 4 kebutuhan (masing-masing bernilai +25%):
-            <br>• <b>Pilar Ekologi (0, 1, 6):</b> Min. 10 petak (+25%)
-            <br>• <b>Pilar Hunian (0, 3, 4):</b> Min. 10 petak (+25%)
-            <br>• <b>Pilar Bisnis (2, 5, 6):</b> Min. 10 petak (+25%)
-            <br>• <b>Bangunan Trademark:</b> Min. 6 petak sesuai ketetapan Master Plan (+25%)
-            <br>• <i>Catatan: Skor akhir tiap distrik dihitung dari Skor Poker Murni × % Happiness (klik angka skor di header distrik untuk melihat rincian kalkulasinya).</i>
-          </li>
-          <li><b>Aspirasi Warga:</b> Klik badge Happiness di header tiap distrik untuk melihat apa saja angka yang masih dibutuhkan warga di distrik tersebut. Jika kebutuhan terpenuhi sempurna, warga merasa senang!</li>
-          <li><b>Syarat Kalah (Fail-State):</b> Jika saat permainan berakhir terdapat <b>minimal 1 distrik</b> dengan Happiness di bawah <b>50%</b>, permainan langsung dihitung <b>KALAH (Kerusuhan Kota)</b>.</li>
-          <li><b>Rute pembangunan:</b> Game berlangsung selama <b>6 ronde</b> dengan <b>3 aksi</b> per ronde:
-            <br>• <b>Ronde Ganjil (1, 3, 5):</b> Westfall → Eastgate → Midvale.
-            <br>• <b>Ronde Genap (2, 4, 6):</b> Eastgate → Westfall → Midvale.
-          </li>
-          <li><b>Tukar Kartu:</b> Pilih 1 kartu di distrik yang sedang aktif dan 1 kartu di tangan, lalu klik <i>Tukar Kartu</i>.</li>
-          <li><b>Putar Domino:</b> Klik 2x atau tombol 🔄 untuk memutar kartu tangan 180° (menukar posisi atas & bawah).</li>
-          <li><b>Wild Angka:</b> Petak berlabel ⭐ adalah wild angka. Klik petak tersebut untuk memilih angka (0–6). Warnanya tetap sesuai warna asli kartu.</li>
-          <li><b>Target Bonus:</b> Petak yang cocok dengan bagian bawah Kartu Khusus bernilai bonus <b>+3 poin</b> pada baris yang membentuk kombinasi sah.</li>
-          <li><b>Deck:</b> Di akhir ronde 1 sampai 5 (tepat 5 kali jeda), tukar 1 kartu tangan dengan 1 kartu dari Deck Ronde. Di akhir ronde 6, evaluasi akhir langsung dilakukan.</li>
+        <ul class="rules-list" id="rules-content-list">
+          <!-- Diisi otomatis oleh updateAllStaticTexts() di citydomino_i18n.js -->
         </ul>
-        <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()">Kembali ke Permainan</button>
+        <button class="btn-undo" style="width:100%; margin-top:8px;" onclick="closeHelpModal()" data-i18n="btn_back_game">Return to Game</button>
       </div>
     </div>
   </div>
+
   <!-- Tag Script JS sebelum </body> -->
+  <script type="text/javascript" src="citydomino_i18n.js?v=19"></script>
   <script type="text/javascript" src="citydomino_data.js?v=3"></script>
   <script type="text/javascript" src="citydomino_engine.js?v=3"></script>
   <script type="text/javascript" src="citydomino_leaderboard.js?v=3"></script>
@@ -446,8 +438,13 @@
       }
     }
 
-    // Inisialisasi Event Tombol Homescreen
+    // Inisialisasi Event Tombol Homescreen & Sinkronisasi Bahasa
     document.addEventListener('DOMContentLoaded', () => {
+      // Inisialisasi lokalisasi teks awal
+      if (typeof initI18n === 'function') {
+        initI18n();
+      }
+
       const homescreen = document.getElementById('homescreen-screen');
       const btnStart = document.getElementById('btn-start-game');
       const btnTutorial = document.getElementById('btn-open-tutorial');
